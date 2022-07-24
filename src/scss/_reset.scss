@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: 'Inter', sans-serif;
+}
+
+html {
+  //font-size: 62.5%;
+  font-size: 100%;
+}
+
+/*
+body {
+  background-color: #000;
+}
+*/
+
+button {
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+//Onde existir botão disabled, quando passar o mouse, ele ficará desabilitado
+  &[disabled] {
+    cursor: not-allowed;
+  }
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}

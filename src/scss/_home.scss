@@ -1,0 +1,426 @@
+.s-area-slide-hero {
+  position: relative;
+  width: 100%;
+//Valor correspondente à soma da altura da área onde fica o background azul ou vermelho atrás da pokebola (708px) com a altura da área onde fica o Select your Pokémon (286px)
+  height: 62.125rem;
+  .slide-hero {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .swiper-slide {
+      &.blue {
+        .main-area {
+          background-image: url('../img/bg-blue.svg');
+          .text {
+            .image {
+              .pokeball {
+                position: relative;
+                top: -4.0625rem;
+                left: .8125rem;
+              }
+            }
+          }
+          .area-explore {
+            .txt {
+              .icon {
+                background-color: rgba(175, 192, 227, 0.3);
+              }
+            }
+          }
+        }
+      }
+      &::after {
+        content: '';
+        width: 100%;
+        height: 18rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background-color: #EFF3F6;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .main-area {
+        position: relative;
+        background: url('../img/bg-red.svg') no-repeat center center;
+  //Ocupando toda a área
+        background-size: cover;
+        width: 100%;
+        height: 44.125rem;
+        padding-top: 8.3125rem;
+        .container {
+          position: relative;
+          height: 100%;
+        }
+        .text {
+          .tag {
+            margin: 0 auto;
+          }
+          h1 {
+            text-align: center;
+            margin-top: 1.8125rem;
+            margin-bottom: .5rem;
+          }
+          p {
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.125rem;
+            line-height: 150%;
+            color: #FFFFFF;
+          }
+          .image {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 49.875rem;
+            margin: 0 auto;
+            margin-top: 7.625rem;
+            .lights {
+              position: absolute;
+              top: -3.0625rem;
+              left: 50%;
+//Margin left negativo, da largura da imagem (170px) dividido por dois = 85px
+              margin-left: -5.3125rem;
+            }
+          }
+        }
+        .area-explore {
+          position: absolute;
+          bottom: 5rem;
+          left: 0;
+          width: 100%;
+          z-index: 10;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          .txt {
+            position: relative;
+            top: -2.4375rem;
+            left: -1.5rem;
+            display: flex;
+            align-items: center;
+        //Rotaciona o texto, deixando ele na vertical, -90deg para deixar de baixo para cima
+            transform: rotate(-90deg);
+            .icon {
+              width: 2.5rem;
+              height: 2.5rem;
+              background-color: #C90C0C;
+              border-radius: 50%;
+              @include centerTotalFlex;
+        //Icone apontando para baixo
+              transform: rotate(90deg);
+            }
+            span {
+              font-weight: 500;
+              font-size: .8125rem;
+              line-height: 150%;
+              color: #FFFFFF;
+              margin-left: 1.875rem;
+            }
+          }
+          .swiper-pagination {
+            position: relative;
+            .swiper-pagination-bullet {
+              width: .4375rem;
+              height: .4375rem;
+              background-color: #ffffff;
+              &:not(:first-child) {
+                margin-left: .5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+//Deixando responsivo para tablet
+  @media(max-width: 768px) {
+    height: 59.625rem;
+    .slide-hero {
+      .swiper-slide {
+        &.blue {
+          .main-area {
+            .text {
+              h1 {
+                margin: 0 auto;
+                margin-top: 1.8125rem;
+                margin-bottom: .5rem;
+//Fazendo o texto na Pokébola azul quebrar em duas linhas para os elementos ficarem igualmente alinhados na Pokébola vermelha
+                max-width: 24.0625rem;
+              }
+            }
+          }
+        }
+        &::after {
+          height: 15.625rem;
+        }
+        .main-area {
+          .area-explore {
+            display: none;
+          }
+          .text {
+            .image {
+              margin-top: 5.125rem;
+            }
+          }
+        }
+      }
+    }
+  }
+//Resposivo para mobile
+  @media(max-width: 560px) {
+//Retirando a barra lateral
+    overflow: hidden;
+    height: 65.3125rem;
+    .slide-hero {
+      .swiper-slide {
+        &.blue {
+          .main-area {
+            .text {
+              h1 {
+                max-width: 15.875rem;
+              }
+            }
+          }
+        }
+        .main-area {
+          padding-top: 7.5rem;
+          h1 {
+           font-size: 3rem;
+            line-height: 3.6875rem; 
+          }
+          .image {
+//Utilizando display flex para centralizar a imagem, independente do tamanho do dispositivo
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img {
+              max-width: 45rem;
+            }
+          }
+        }
+        &::after {
+          height: 21.25rem;
+        }
+      }
+    }
+  }
+}
+
+.s-all-info-pokemons {
+  position: relative;
+  padding-top: 7.4375rem;
+  margin-top: -18rem;
+  z-index: 2;
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 10.5rem;
+    h2 {
+      max-width: 16.5625rem;
+    }
+    .search {
+      margin-top: 1.375rem;
+    }
+  }
+  .area-all {
+    display: flex;
+    .left-container {
+      width: 100%;
+      max-width: 14.9375rem;
+      border-right: .0625rem solid #EFF3F6;
+      padding-top: 4.4375rem;
+      padding-bottom: 4.6875rem;
+      ul {
+        li {
+          &:not(:last-child) {
+            margin-bottom: 2.5rem;
+          }
+        }
+      }
+    }
+    .right-container {
+      width: 100%;
+      padding-top: 4.4375rem;
+      padding-left: 4.6875rem;
+      padding-bottom: 4.6875rem;
+      .top-container {
+        margin-bottom: 3.9375rem;
+//Vai pegar a primeira DIV que encontrar dentro da sessão top-container sem precisar definir uma classe, isso só irá funcionar quando tiver apenas uma div pai sozinha, se o top-container tivesse outra div não iria funcionar, nesse caso seria necessário adicionar uma classe.
+        & > div {
+          display: flex;
+          align-items: center;
+          span {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.125rem;
+            line-height: 150%;
+            color: #4D5053;
+            margin-left: .375rem;
+          }
+        }
+      }
+      .select-custom {
+        display: none;
+        position: relative;
+        margin-bottom: 3.4375rem;
+        &.active {
+          .item-selected {
+            border-radius: .625rem .625rem 0 0;
+          }
+          .dropdown-select {
+            opacity: 1;
+            pointer-events: all;
+          }
+        }
+        .item-selected {
+          cursor: pointer;
+          width: 100%;
+          height: 3.5rem;
+          border: .0625rem solid #A0AFBA;
+          background: url('../img/arrow-down-select.svg') no-repeat right 1.5rem center;
+          padding: 0 1.25rem;
+          border-radius: .625rem;
+          display: flex;
+          align-items: center;
+          transition: all .3s;
+          span {
+            color: #7A7D80;
+            opacity: 0.6;
+            font-size: .875rem;
+            margin-right: .25rem;
+          }
+          strong {
+            font-size: .875rem;
+            color: #7A7D80;
+            font-weight: 600;
+          }
+        }
+        .dropdown-select {
+          position: absolute;
+          top: 3.5rem;
+          width: 100%;
+          height: 13.9375rem;
+          border: .0625rem solid #A0AFBA;
+          background-color: #FFFFFF;
+          border-top: 0;
+          padding: 1.3125rem;
+          z-index: 2;   
+          overflow-y: auto;
+          opacity: 0;
+          pointer-events: none;
+          transition: all .3s;
+    //Customizando a barra de scroll
+          &::-webkit-scrollbar-track {
+            background-color: transparent;
+          }
+          &::-webkit-scrollbar {
+            width: .3125rem;
+            background-color: transparent;
+          }
+          &::-webkit-scrollbar-thumb {
+            background-color: #3D75C2;
+            border-radius: .3125rem;
+          }
+          li {
+            &:first-child {
+              button {
+                padding-top: 0;
+              }
+            }
+            button {
+              padding: .75rem 0;
+            }
+          }
+        }
+      }
+      .all {
+        display: grid;
+//Definindo quanta colunas terá, utilizando a unidade fr que é do grid, que vai ocupar 3 espaços igualmente para a área que está ocupando
+//1fr 1fr 1fr => Vai ocupar 3 colunas
+        grid-template-columns: 1fr 1fr 1fr;
+//Espaçamento entre os cards
+        grid-gap: 2rem;
+        margin-bottom: 4.25rem;
+      }
+      .btn-load-more {
+        display: table;
+        margin: 0 auto;
+      }
+    }
+  }
+//Tablet na vertical ou monitores menores
+  @media(max-width: 1200px) {
+    .top {
+      .search {
+        max-width: 20.1875rem;
+      }
+    }
+    .area-all {
+      .left-container {
+        max-width: 9.9375rem;
+        padding-top: 2.5rem;
+      }
+      .right-container {
+        padding-top: 2.5rem;
+        padding-left: 1.5625rem;
+        padding-bottom: 2.5rem;
+        .top-container {
+          margin-bottom: 2.5rem;
+        }
+        .all {
+          grid-gap: 1.25rem;
+        }
+      }
+    }
+  }
+//Tablet
+  @media(max-width: 768px) {
+    margin-top: -16.125rem;
+    .top {
+      margin-bottom: 2.5rem;
+    }
+    .area-all {
+      .left-container {
+        display: none;
+      }
+      .right-container {
+        padding-left: 0px;
+      }
+    }   
+  }
+//Mobile
+  @media(max-width: 560px) {
+    margin-top: -21.25rem;
+    padding-top: 7.5rem;
+    padding-bottom: 2.5rem;
+    .top {
+      display: block;
+      margin-bottom: 2.9375rem;
+      h2 {
+        max-width: 100%;
+        text-align: center;
+        margin: 0 auto;
+      }
+      .search {
+        margin: 0 auto;
+        margin-top: 1.5625rem;
+      }
+    }
+    .area-all {
+      .right-container {
+        .select-custom {
+          display: block;
+        }
+        .all {
+          grid-template-columns: 1fr;
+          grid-gap: 1rem;
+          max-width: 86%;
+          margin: 0 auto;
+          margin-bottom: 3rem;
+        }
+      }
+    }
+  }
+}

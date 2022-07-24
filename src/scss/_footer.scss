@@ -1,0 +1,38 @@
+footer {
+  width: 100%;
+  background-color: #3F5DB3;
+  padding-top: 4.1875rem;
+  padding-bottom: 4.0625rem;
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .text {
+    color: #FFFFFF;
+    h3 {
+      color: #FFFFFF;
+    }
+    p {
+      font-weight: 500;
+      font-size: .875rem;
+      line-height: 180%;
+      color: rgba(255, 255, 255, 0.8);
+      }
+    }
+    @media(max-width: 560px) {
+      padding: 2.5rem 0;
+      .container {
+        flex-direction: column;
+      }
+      .text {
+        margin-bottom: 3rem;
+        h3 {
+          text-align: center;
+        }
+        p {
+          text-align: center;
+        }
+      }
+    }
+  }

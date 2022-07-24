@@ -1,0 +1,934 @@
+.tag {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 15.25rem;
+  max-width: 7.5625rem;
+  padding: .375rem .25rem;
+//Concatenando a classe tag com a blue-tag (Combo Class)
+  &.blue-tag {
+    .icon {
+      background-color: rgba(63, 104, 186, 0.15);
+    }
+    span {
+      color: #3F67BA;
+    }
+  }
+  .icon {
+    width: 1.625rem;
+    height: 1.625rem;
+//A opacidade não é dada no elemento e sim no Background
+//Então é colocado no rgba e arrato até próximo de 0.12
+    background-color: rgba(194, 0, 0, 0.12);
+    border-radius: 50%;
+//Mixin configurado para centralizar o flex    
+    @include centerTotalFlex;
+    margin-right: .5rem;
+  }
+  span {
+    font-weight: 600;
+    font-size: .9375rem;
+    line-height: 150%;
+    color: #C20001;
+  }
+}
+
+.search {
+  background-color: #FFFFFF;
+  border-radius: 7.625rem;
+  width: 100%;
+  max-width: 25.1875rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1.5625rem;
+  padding-right: .4375rem;
+  input[type=text] {
+    border: 0;
+    outline: none;
+    width: 90%;
+    font-size: .9375rem;
+    line-height: 150%;
+    color: #A0AFBA;
+//Estilizando o Placeholder    
+    &::placeholder {
+      color: #A0AFBA;
+    }
+  }
+  button {
+    width: 2.625rem;
+    height: 2.625rem;
+    background-color: rgba(158, 185, 225, 0.1);
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: border-color .3s;
+    &:hover {
+      border-color:#3E75C3;
+    }
+    @include centerTotalFlex;
+  }
+}
+
+.type-filter {
+  display: flex;
+  align-items: center;
+//No CSS existe uma propriedade filter que deixa um componente inteiro em tons de preto e branco
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: all .3s;
+  &:hover,
+  &.active {
+    filter: grayscale(0%);
+    opacity: 1;
+  }
+  .icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    @include centerTotalFlex;
+    margin-right: .3125rem;
+  }
+  span {
+    font-weight: 500;
+    font-size: .9375rem;
+    line-height: 150%;
+  }
+  &.all {
+    span {
+      color: #3F5DB3;
+    }
+  }
+  &.ghost {
+    span {
+      color: #616EB7;
+    }
+  }
+  &.bug {
+    span {
+      color: #9BBA48;
+    }
+}
+  &.dark {
+    span {
+      color: #595761;
+    }
+}
+  &.dragon {
+    span {
+      color: #2C6AC1;
+    }
+}
+  &.electric {
+    span {
+      color: #D4BC34;
+    }
+}
+  &.fairy {
+    span {
+      color: #E296E1;
+    }
+}
+  &.fighting {
+    span {
+      color: #C44D61;
+    }
+}
+  &.ground {
+    span {
+      color: #CE8056;
+    }
+}
+  &.ice {
+    span {
+      color: #71BAAC;
+    }
+}
+  &.normal {
+    span {
+      color: #909090;
+    }
+}
+  &.poison {
+    span {
+      color: #AC6ACA;
+    }
+}
+  &.psychic {
+    span {
+      color: #EB8B85;
+    }
+}
+  &.rock {
+    span {
+      color: #84BEB3;
+    }
+}
+  &.grass {
+    span {
+      color: #73B861;
+    }
+}
+  &.steel {
+    span {
+      color: #6594A1;
+    }
+}
+  &.water {
+    span {
+      color: #4F77BE;
+    }
+}
+  &.fire {
+    span {
+      color: #E96303;
+    }
+}
+  &.flying {
+    span {
+      color: #758CBD;
+    }
+}
+}
+
+.card-pokemon {
+  position: relative;
+  width: 100%;
+  max-width: 17.5rem;
+  height: 19rem;
+  background-color: #FFFFFF;
+  box-shadow: 0rem .625rem 3.1875rem -0.3125rem rgba(183, 189, 193, 0.3);
+  border-radius: .75rem;
+  z-index: 1;
+  transition: all .3s;
+  &:hover {
+  //Aumenta o card quando o mouse está em cima
+    transform: scale(1.02);
+    box-shadow: 0rem .75rem 2.5rem -0.3125rem rgba(90, 96, 100, 0.3);
+  }
+  &.grass {
+    .image {
+      &:after {
+        background-color: rgba(114, 184, 97, 0.2);
+      }
+    }
+  }
+  &.bug {
+    .image {
+      &:after {
+        background-color: rgba(155, 186, 72, 0.2);
+      }
+    }
+  }
+  &.dark {
+    .image {
+      &:after {
+        background-color: rgba(89, 87, 97, 0.2);
+      }
+    }
+  }
+  &.dragon {
+    .image {
+      &:after {
+        background-color: rgba(44, 106, 193, 0.2);
+      }
+    }
+  }
+  &.electric {
+    .image {
+      &:after {
+        background-color: rgba(212, 188, 52, 0.2);
+      }
+    }
+  }
+  &.fairy {
+    .image {
+      &:after {
+        background-color: rgba(226, 150, 225, 0.2);
+      }
+    }
+  }
+  &.fighting {
+    .image {
+      &:after {
+        background-color: rgba(196, 77, 97, 0.2);
+      }
+    }
+  }
+  &.ground {
+    .image {
+      &:after {
+        background-color: rgba(206, 128, 86, 0.2);
+      }
+    }
+  }
+  &.ice {
+    .image {
+      &:after {
+        background-color: rgba(113, 186, 172, 0.2);
+      }
+    }
+  }
+  &.normal {
+    .image {
+      &:after {
+        background-color: rgba(144, 144, 144, 0.2);
+      }
+    }
+  }
+  &.poison {
+    .image {
+      &:after {
+        background-color: rgba(172, 106, 202, 0.2);
+      }
+    }
+  }
+  &.psychic {
+    .image {
+      &:after {
+        background-color: rgba(235, 139, 133, 0.2);
+      }
+    }
+  }
+  &.rock {
+    .image {
+      &:after {
+        background-color: rgba(132, 190, 179, 0.2);
+      }
+    }
+  }
+  &.steel {
+    .image {
+      &:after {
+        background-color: rgba(101, 148, 161, 0.2);
+      }
+    }
+  }
+  &.water {
+    .image {
+      &:after {
+        background-color: rgba(79, 119, 190, 0.2);
+      }
+    }
+  }
+  &.fire {
+    .image {
+      &:after {
+        background-color: rgba(233, 99, 3, 0.2);
+      }
+    }
+  }
+  &.flying {
+    .image {
+      &:after {
+        background-color: rgba(117, 140, 189, 0.2);
+      }
+    }
+  }
+  &.ghost {
+    .image {
+      &:after {
+        background-color: rgba(97, 110, 183, 0.2);
+      }
+    }
+  }
+  .image {
+    position: relative;
+    width: 12.5rem;
+    height: 12.5rem;
+    @include centerTotalFlex;
+//Centralizando a div
+    margin: 0 auto;
+    margin-bottom: .875rem;
+    .thumb-img {
+      max-width: 8.875rem;
+    }
+//Circulo que fica atrás do pokémon com a cor representando seu respectivo tipo
+    &:after {
+//Criando um conteúdo que não está dentro do HTML
+      content: "";
+      position: absolute;
+      width: 10.3125rem;
+      height: 10.3125rem;
+      border-radius: 50%;
+      z-index: -1;
+    }
+  }
+  .info {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 1.75rem;
+    .text {
+//O H3 já possui um padrão, então será estilizado apenas o span
+      span {
+        text-align: left;
+        display: block;
+        font-weight: 500;
+        font-size: .8125rem;
+        line-height: 150%;
+        color: #7A7D80;
+        margin-bottom: .375rem;
+      }      
+    }
+    .icon {
+      margin-bottom: .625rem;
+    }
+  }
+  @media(max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+.tag-type {
+  display: inline-block;
+  padding: 0 1.5625rem;
+  line-height: 1.5rem;
+  border-radius: .125rem;
+  font-weight: 600;
+  font-size: .8125rem;
+  letter-spacing: -0.01em;
+  font-family: 'Montserrat', sans-serif;
+  &.grass {
+    color: var(--type-grass);
+    background-color: rgba(115, 184, 97, 0.1);
+  }
+  &.bug {
+    color: var(--type-bug);
+    background-color: rgba(155, 186, 72, 0.1);
+  }
+  &.dark {
+    color: var(--type-dark);
+    background-color: rgba(89, 87, 97, 0.1);
+  }
+  &.dragon {
+    color: var(--type-dragon);
+    background-color: rgba(44, 106, 193, 0.1);
+  }
+  &.electric {
+    color: var(--type-electric);
+    background-color: rgba(212, 188, 52, 0.1);
+  }
+  &.fairy {
+    color: var(--type-fairy);
+    background-color: rgba(226, 150, 225, 0.1);
+  }
+  &.fighting {
+    color: var(--type-fighting);
+    background-color: rgba(196, 77, 97, 0.1);
+  }
+  &.ground {
+    color: var(--type-ground);
+    background-color: rgba(206, 128, 86, 0.1);
+  }
+  &.ice {
+    color: var(--type-ice);
+    background-color: rgba(113, 186, 172, 0.1);
+  }
+  &.normal {
+    color: var(--type-normal);
+    background-color: rgba(144, 144, 144, 0.1);
+  }
+  &.poison {
+    color: var(--type-poison);
+    background-color: rgba(172, 106, 202, 0.1)
+  }
+  &.psychic {
+    color: var(--type-psychic);
+    background-color: rgba(235, 139, 133, 0.1);
+  }
+  &.rock {
+    color: var(--type-rock);
+    background-color: rgba(132, 190, 179, 0.1);
+  }
+  &.steel {
+    color: var(--type-steel);
+    background-color: rgba(101, 148, 161, 0.1);
+  }
+  &.water {
+    color: var(--type-water);
+    background-color: rgba(79, 119, 190, 0.1);
+  }
+  &.fire {
+    color: var(--type-fire);
+    background-color: rgba(233, 99, 3, 0.1);
+  }
+  &.flying {
+    color: var(--type-flying);
+    background-color: rgba(117, 140, 189, 0.1);
+  }
+  &.ghost {
+    color: var(--type-ghost);
+    background-color: rgba(97, 110, 183, 0.1);
+  }
+}
+
+.btn-load-more {
+  background-color: rgba(63, 93, 179, 0.1);
+  border-radius: .375rem;
+  padding: .875rem 1.25rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: .875rem;
+  letter-spacing: -0.01em;
+  color: #3F5DB3;
+  transition: all .3s;
+  &:hover {
+    background-color: #3F5DB3;
+    color: #FFFFFF;
+  }
+}
+
+//************************** Coponentes do MODAL **************************
+
+.modal {
+//Idependente se eu rolar a página, terá que ficar fixo na tela
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+//Para deixar como o maior z-index do site
+  z-index: 2022;
+//Imagem background do lado esquerdo, localizada atrás da imagem do Pokémon
+  opacity: 0;
+  pointer-events: none;
+  transition: .3s;
+  &[type-pokemon-modal='grass'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/grass.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='bug'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/bug.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='dragon'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/dragon.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='electric'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/electric.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fairy'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fairy.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fighting'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fighting.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ground'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ground.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ice'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ice.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='normal'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/normal.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='poison'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/poison.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='psychic'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/psychic.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='rock'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/rock.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ghost'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ghost.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='steel'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/steel.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='water'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/water.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fire'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fire.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='flying'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/flying.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='dark'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/dark.svg');
+      }
+    }
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+//Será o menor z-index dentro do modal
+    z-index: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .box {
+    position: relative;
+    width: 100%;
+    max-width: 44.375rem;
+    height: 31.75rem;
+    background-color: #FFFFFF;
+    z-index: 1;
+    box-shadow: 0rem .625rem 2.5rem rgba(13, 12, 71, 0.05);
+    border-radius: 1rem;
+    display: flex;
+//Animação quando eu clicar no card, ele irá abrir, o box virá de baixo para cima
+    transform: translateY(2.5rem);
+    transition: transform .3s ease-in;
+    .close {
+//O botão fechar está localizado acima do box, então irei definir sua position como absolute
+      position: absolute;
+//Configurando o top pra jogar o botão para fora do box
+      top: -2.75rem;
+      right: 0;
+      width: 2.25rem;
+      height: 2.25rem;
+      background-color: #FFFFFF;
+      border-radius: .5rem;
+      @include centerTotalFlex;
+    }
+    .left-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 11.9375rem;
+      background-repeat: no-repeat;
+      background-position: center center;
+      .icon {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        width: 2.125rem;
+        height: 2.125rem;
+        background-color: #FFFFFF;
+        border-radius: 50%;
+        @include centerTotalFlex;
+      }
+      .image {
+        position: absolute;
+        left: .875rem;
+        bottom: 8.1875rem;
+        width: 12.625rem;
+        img {
+          width: 100%;
+        }
+      }
+    }
+    .right-container {
+      padding: 2.1875rem 4.5rem 1.8125rem 4.625rem;
+      width: 100%;
+      .name {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: .625rem;
+        h2 {
+          font-family: 'Montserrat', sans-serif;
+          font-weight: bold;
+          font-size: 1.75rem;
+          line-height: 2.125rem;
+          letter-spacing: -0.01em;
+          color: #2F3133;
+          }
+          span {
+            position: relative;
+            top: -0.1875rem;
+            margin-left: .5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            line-height: 1.25rem;
+            letter-spacing: -0.01em;
+            color: #7A7D80;
+          }
+        }
+        .type {
+          display: flex;
+          align-items: center;
+//Se tiver mais de 4 tags aqui, irá quebrar automaticamente para baixo
+          flex-wrap: wrap;
+          width: 100%;
+          margin-bottom: 2rem;
+          li {
+//Não quero que aplique no primeiro
+            &:not(:first-child) {
+              margin-left: .625rem;
+            }
+          }
+        }
+        .info {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: .9375rem;
+          li {
+            &:not(:first-child) {
+              margin-left: 3rem;
+            }
+            span {
+              display: block;
+              font-size: .8125rem;
+              line-height: 1rem;
+              letter-spacing: -0.01em;
+              color: #7A7D80;
+              margin-bottom: .25rem;
+            }
+            strong {
+              font-weight: 600;
+              font-size: .875rem;
+              line-height: 1.0625rem;
+              letter-spacing: -0.01em;
+              color: #2F3133;
+            }
+          }
+        }
+        .weak {
+          margin-bottom: .625rem;
+          h4 {
+            font-weight: 600;
+            font-size: .8125rem;
+            line-height: 1rem;
+            letter-spacing: -0.01em;
+            color: #4D5053;
+            margin-bottom: 1rem;
+          }
+          ul {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            flex-wrap: wrap;
+            li {
+              margin-bottom: .625rem;
+              &:not(:last-child) {
+                margin-right: .625rem;
+              }
+            }
+          }
+        }
+        .stats {
+          h5 {
+            font-weight: 600;
+            font-size: .8125rem;
+            line-height: 1rem;
+            letter-spacing: -0.01em;
+            color: #4D5053;
+            margin-bottom: 1rem;
+          }
+          .all-stats {
+            .item {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              &:not(:last-child) {
+                margin-bottom: .8125rem;
+              }
+              span {
+                display: block;
+                font-size: .75rem;
+                line-height: .9375rem;
+                color: #7A7D80;
+//O width manterá todas as barras alinhadas
+                width: 4.25rem;
+              }
+              .status {
+//Parte com a cor cinza (Fundo da Barra)
+                position: relative;
+                width: 100%;
+                max-width: 17.6875rem;
+                height: .1875rem;
+                background-color: #EFF3F6;
+                .bar {
+//Parte com a cor vermelha
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  z-index: 0;
+                  background-color: #C20001;
+//Simulando que o width tem 56%, etc...; esses detalhes virão da API
+                  width: 56%;
+                  height: 100%;
+                }
+                .separator {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 100%;
+                  li {
+                    width: .25rem;
+                    height: .1875rem;
+                    background-color: #FFFFFF;
+                    &:not(:first-child) {
+                      margin-left: 3.375rem;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    @media(max-width: 560px) {
+      align-items: flex-end;
+      .box {
+        flex-direction: column;
+        width: 100%;
+        height: 90%;
+        .close {
+          width: 3.125rem;
+          height: 3.125rem;
+          top: -3.125rem;
+          border-radius: .5rem .5rem 0 0;
+          img {
+            width: 1.5625rem;
+          }
+        }
+        .left-container {
+          max-width: 100%;
+          height: 7.8125rem;
+          background-size: cover;
+          .image {
+            left: 50%;
+            bottom: -1.5625rem;
+            width: 7.5rem;
+            margin-left: -3.75rem;
+            img {
+              width: 100%;
+              height: 100%;
+      //Independente do tamanho da imagem, ela irá ficar posicionada corretamente na área designada.
+              object-fit: cover;
+            }
+          }
+        }
+        .right-container {
+          padding: 2.5rem 1.5rem;
+          .name {
+            justify-content: center;
+          }
+          .type {
+            justify-content: center;
+          }
+          .info {
+            justify-content: center;
+          }
+          .weak {
+            h4 {
+              text-align: center;
+            }
+            ul {
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              grid-gap: .625rem;
+              li {
+                &:not(:first-child) {
+                  margin: 0;
+                }
+                .tag-type {
+                  width: 100%;
+                  text-align: center;
+                }
+              }
+            }
+          }
+          .stats {
+            .all {
+              .item {
+                .bar-status {
+                 max-width: 75%;
+                 .separator {
+                  li {
+                    &:not(:first-child) {
+                      margin-left: 19%;
+                    }
+                  }
+                 } 
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+//Vou querer que o modal apareça quando o meu HTML (Que seria como o pai de todos do meu Documento HTML), contenha uma classe chamada open-modal
+.open-modal {
+  .modal {
+    opacity: 1;
+    pointer-events: all;
+    .box {
+      transform: translateY(0);
+    }
+  }
+}
