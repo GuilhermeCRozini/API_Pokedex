@@ -61,7 +61,7 @@
     height: 2.625rem;
     background-color: rgba(158, 185, 225, 0.1);
     border-radius: 50%;
-    border: 1px solid transparent;
+    border: .0625rem solid transparent;
     transition: border-color .3s;
     &:hover {
       border-color:#3E75C3;
@@ -365,7 +365,7 @@
         text-align: left;
         display: block;
         font-weight: 500;
-        font-size: .8125rem;
+        font-size: 1.1875rem;
         line-height: 150%;
         color: #7A7D80;
         margin-bottom: .375rem;
@@ -375,7 +375,7 @@
       margin-bottom: .625rem;
     }
   }
-  @media(max-width: 1200px) {
+  @media(max-width: 75rem) {
     max-width: 100%;
   }
 }
@@ -389,6 +389,7 @@
   font-size: .8125rem;
   letter-spacing: -0.01em;
   font-family: 'Montserrat', sans-serif;
+  @include tagTypeSize;
   &.grass {
     color: var(--type-grass);
     background-color: rgba(115, 184, 97, 0.1);
@@ -488,15 +489,15 @@
   left: 0;
   width: 100%;
   height: 100%;
+//Para deixar como o maior z-index do site
+  z-index: 2022;
   display: flex;
   align-items: center;
   justify-content: center;
-//Para deixar como o maior z-index do site
-  z-index: 2022;
 //Imagem background do lado esquerdo, localizada atrás da imagem do Pokémon
   opacity: 0;
   pointer-events: none;
-  transition: .3s;
+  transition: all .3s;
   &[type-pokemon-modal='grass'] {
     .box {
       .left-container {
@@ -630,21 +631,21 @@
     width: 100%;
     height: 100%;
 //Será o menor z-index dentro do modal
-    z-index: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.3);
   }
   .box {
     position: relative;
+    z-index: 2;
     width: 100%;
     max-width: 44.375rem;
     height: 31.75rem;
     background-color: #FFFFFF;
-    z-index: 1;
     box-shadow: 0rem .625rem 2.5rem rgba(13, 12, 71, 0.05);
     border-radius: 1rem;
     display: flex;
 //Animação quando eu clicar no card, ele irá abrir, o box virá de baixo para cima
-    transform: translateY(2.5rem);
+    transform: translateY(3.125rem);
     transition: transform .3s ease-in;
     .close {
 //O botão fechar está localizado acima do box, então irei definir sua position como absolute
@@ -656,6 +657,7 @@
       height: 2.25rem;
       background-color: #FFFFFF;
       border-radius: .5rem;
+      border: 0;
       @include centerTotalFlex;
     }
     .left-container {
@@ -665,6 +667,9 @@
       max-width: 11.9375rem;
       background-repeat: no-repeat;
       background-position: center center;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
       .icon {
         position: absolute;
         top: 1.25rem;
@@ -686,7 +691,7 @@
       }
     }
     .right-container {
-      padding: 2.1875rem 4.5rem 1.8125rem 4.625rem;
+      margin: 1.8125rem 4.5rem 1.8125rem 4.5rem;
       width: 100%;
       .name {
         display: flex;
@@ -701,14 +706,14 @@
           color: #2F3133;
           }
           span {
-            position: relative;
-            top: -0.1875rem;
-            margin-left: .5rem;
             font-family: 'Montserrat', sans-serif;
             font-size: 1rem;
             line-height: 1.25rem;
             letter-spacing: -0.01em;
             color: #7A7D80;
+            position: relative;
+            top: -0.75rem;
+            margin-left: .5rem;
           }
         }
         .type {
@@ -717,7 +722,8 @@
 //Se tiver mais de 4 tags aqui, irá quebrar automaticamente para baixo
           flex-wrap: wrap;
           width: 100%;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5625rem;
+          margin-inline: auto;
           li {
 //Não quero que aplique no primeiro
             &:not(:first-child) {
@@ -728,10 +734,11 @@
         .info {
           display: flex;
           align-items: flex-start;
-          margin-bottom: .9375rem;
+          height: 4.4375rem;
+          margin-bottom: .5625rem;
           li {
             &:not(:first-child) {
-              margin-left: 3rem;
+              margin-left: 4.8rem;
             }
             span {
               display: block;
@@ -747,12 +754,16 @@
               line-height: 1.0625rem;
               letter-spacing: -0.01em;
               color: #2F3133;
+              display: flex;
+              flex-direction: column;
             }
           }
         }
         .weak {
           margin-bottom: .625rem;
           h4 {
+            position: relative;
+            top: -0.3125rem;
             font-weight: 600;
             font-size: .8125rem;
             line-height: 1rem;
@@ -761,12 +772,17 @@
             margin-bottom: 1rem;
           }
           ul {
+            position: relative;
+            top: -0.625rem;
+            height: 4.25rem;
             display: flex;
             align-items: center;
             width: 100%;
             flex-wrap: wrap;
+            margin-bottom: .8125rem;
             li {
               margin-bottom: .625rem;
+              margin-left: .625rem;
               &:not(:last-child) {
                 margin-right: .625rem;
               }
@@ -774,6 +790,8 @@
           }
         }
         .stats {
+          position: relative;
+          top: -0.9375rem; 
           h5 {
             font-weight: 600;
             font-size: .8125rem;
@@ -782,8 +800,11 @@
             color: #4D5053;
             margin-bottom: 1rem;
           }
-          .all-stats {
+          .all {
+            width: 23.4375rem;
+            height: 9.6875rem;
             .item {
+              margin-left: .625rem;
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -795,39 +816,42 @@
                 font-size: .75rem;
                 line-height: .9375rem;
                 color: #7A7D80;
-//O width manterá todas as barras alinhadas
                 width: 4.25rem;
+//Impede a quebra de linha
+                white-space: nowrap;
               }
-              .status {
+              .bar-status {
 //Parte com a cor cinza (Fundo da Barra)
                 position: relative;
                 width: 100%;
                 max-width: 17.6875rem;
                 height: .1875rem;
                 background-color: #EFF3F6;
+                overflow: hidden;
                 .bar {
 //Parte com a cor vermelha
                   position: absolute;
                   top: 0;
                   left: 0;
+//Simulando que o width tem 56%, etc...; esses detalhes virão da API
+                  width: 0%;
+                  height: 100%;
                   z-index: 0;
                   background-color: #C20001;
-//Simulando que o width tem 56%, etc...; esses detalhes virão da API
-                  width: 56%;
-                  height: 100%;
                 }
                 .separator {
                   position: absolute;
                   top: 0;
                   left: 0;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
                   width: 100%;
+                  height: 100%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
                   li {
                     width: .25rem;
                     height: .1875rem;
-                    background-color: #FFFFFF;
+                    background-color: #ffffff;
                     &:not(:first-child) {
                       margin-left: 3.375rem;
                     }
@@ -872,31 +896,106 @@
           }
         }
         .right-container {
-          padding: 2.5rem 1.5rem;
+          padding: 2.1875rem 7.2rem 2.9rem 7.4rem;
+          width: 100%;
+          //padding: 35px 3.75rem 1.4375rem 3.75rem;
+          //padding: 40px 24px;
           .name {
-            justify-content: center;
+            //justify-content: center;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: .625rem;
+            h2 {
+              font-family: 'Montserrat', sans-serif;
+              font-weight: bold;
+              font-size: 1.75rem;
+              line-height: 2.125rem;
+              letter-spacing: -0.01em;
+              color: #2F3133;
+            }
+            span {
+              font-family: 'Montserrat', sans-serif;
+              font-size: 1rem;
+              line-height: 1.25rem;
+              letter-spacing: -0.01em;
+              color: #7A7D80;
+              position: relative;
+              top: -0.1875rem;
+              margin-left: .5rem;
+            }
           }
           .type {
-            justify-content: center;
+            //justify-content: center;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-bottom: 2rem;
+            li {
+              &:not(:first-child) {
+                margin-left: .625rem;
+              }
+            }
           }
           .info {
-            justify-content: center;
+            //justify-content: center;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: .9375rem;
+            li {
+              &:not(:first-child) {
+                margin-left: 3rem;
+              }
+              span {
+                display: block;
+                font-size: .8125rem;
+                line-height: 1rem;
+                letter-spacing: -0.01em;
+                color: #7A7D80;
+                margin-bottom: .25rem;
+              }
+              strong {
+                font-weight: 600;
+                font-size: .875rem;
+                line-height: 1.0625rem;
+                letter-spacing: -0.01em;
+                color: #2F3133;
+              }
+            }
           }
           .weak {
+            margin-bottom: .625rem;
+            /*/*//*/*////////
+            //height: 100px;
             h4 {
-              text-align: center;
+              //text-align: center;
+              font-weight: 600;
+              font-size: .8125rem;
+              line-height: 1rem;
+              letter-spacing: -0.01em;
+              color: #4D5053;
+              margin-bottom: 1rem;
             }
             ul {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              flex-wrap: wrap;
+              /*height: 68px;
               display: grid;
               grid-template-columns: 1fr 1fr 1fr;
-              grid-gap: .625rem;
+              grid-gap: 10px;
+              margin-inline: auto;*/
               li {
+                margin-bottom: .625rem;
                 &:not(:first-child) {
-                  margin: 0;
+                  //margin: 0;
+                  margin-right: .625rem;
                 }
                 .tag-type {
                   width: 100%;
                   text-align: center;
+                  @include centerTotalFlex;
                 }
               }
             }
@@ -904,12 +1003,50 @@
           .stats {
             .all {
               .item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                &:not(:last-child) {
+                  margin-bottom: .8125rem;
+                }
+                span {
+                  display: block;
+                  font-size: .75rem;
+                  line-height: .9375rem;
+                  color: #7A7D80;
+                  width: 4.25rem;
+                }
                 .bar-status {
-                 max-width: 75%;
-                 .separator {
+                  position: relative;
+                  width: 100%;
+                  max-width: 17.6875rem;
+                  height: .1875rem;
+                  background-color: #EFF3F6;
+                  overflow: hidden;
+                  .bar {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 56%;
+                    height: 100%;
+                    z-index: 0;
+                    background-color: #C20001;
+                  }
+                  .separator {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                   li {
+                    width: .25rem;
+                    height: .25rem;
+                    background-color: #ffffff;
                     &:not(:first-child) {
-                      margin-left: 19%;
+                      margin-left: 3.375rem;
                     }
                   }
                  } 

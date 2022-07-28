@@ -1,11 +1,15 @@
+'use strict'
+
 // scripts do slide principal
 // https://swiperjs.com
 
 var slide_hero = new Swiper(".slide-hero", {
-  effect: 'fade',
   pagination: {
     el: ".slide-hero .main-area .area-explore .swiper-pagination",
   },
+  effect: 'fade',
+  autoplay: { delay: 4e3, disableOnInteraction: !1 },
+  keyboard: { enabled: !0 }
 });
 
 
@@ -202,7 +206,7 @@ function openDetailsPokemon() {
     const codePokemonModal =  document.getElementById('js-code-pokemon-modal');
     const heightPokemonModal = document.getElementById('js-height-pokemon');
     const weightPokemonModal = document.getElementById('js-weight-pokemon');
-    const mainAbilitiesPokemonModal = document.getElementById('js-main-abilities-pokemon');
+//    const mainAbilitiesPokemonModal = document.getElementById('js-main-abilities-pokemon');
 
 //Pegando o src da imagem do card e atrelando no src da imagem do modal
     imgPokemonModal.setAttribute('src', imagePokemon.getAttribute('src'));
@@ -226,7 +230,7 @@ function openDetailsPokemon() {
         height: data.height,
         abilities: data.abilities,
         stats: data.stats,
-//Acessando o tipo princiál do Pokémon, para pegar todas as fraquezas relacionadas à esse tipo
+//Acessando o tipo principal do Pokémon, para pegar todas as fraquezas relacionadas à esse tipo
         urlType: data.types[0].type.url
       }
 
@@ -234,7 +238,7 @@ function openDetailsPokemon() {
       function listingTypesPokemon() {
         const areaTypesModal = document.getElementById('js-types-pokemon');
 
-        areaTypesModal.innerHTML = '';
+        areaTypesModal.innerText = '';
 
         let arrayTypes = infoPokemon.types;
 
@@ -277,7 +281,34 @@ function openDetailsPokemon() {
       heightPokemonModal.textContent = `${infoPokemon.height / 10}m`;
 //Apareceu 69, para converter para 6.9, vou dividir por 10
       weightPokemonModal.textContent = `${infoPokemon.weight / 10}Kg`;
-      mainAbilitiesPokemonModal.textContent = infoPokemon.mainAbilities;
+      //mainAbilitiesPokemonModal.textContent = infoPokemon.mainAbilities;
+
+      //secondAbilityPokemonModal.textContent = `${primeiraLetraMaiuscula(data.abilities[1].ability.name)}`;
+
+//**************************** FUNCIONALIDADE MOSTRAR TODAS AS HABILIDADES ****************************/
+
+
+  function showMoreAbilities() {
+
+    const AbilitiesModal = document.getElementById('js-show-more-abilities');
+      const divAbility = document.getElementById('div-ability');
+
+      divAbility.innerHTML = '';
+
+      let arrayAbilities = infoPokemon.abilities;  
+
+      arrayAbilities.forEach(itemAbility => {
+
+          AbilitiesModal.appendChild(divAbility);
+
+          let strongList = document.createElement('strong');
+          strongList.classList = 'abilityList';
+          strongList.textContent = primeiraLetraMaiuscula(itemAbility.ability.name);
+          divAbility.appendChild(strongList);
+        })       
+      }
+
+//******************************************************************************************************/
 
       const statsHp = document.getElementById('js-stats-hp');
       statsHp.style.width = `${infoPokemon.stats[0].base_stat}%`
@@ -298,7 +329,8 @@ function openDetailsPokemon() {
       statsSpeed.style.width = `${infoPokemon.stats[5].base_stat}%`
 
       listingTypesPokemon();
-      listingWeaknesses(); 
+      listingWeaknesses();
+      showMoreAbilities();
     })
   }
   
@@ -311,7 +343,7 @@ function openDetailsPokemon() {
 // Script para listar todos os tipo de Pokémon
 
 const areaTypes =  document.getElementById('js-type-area');
-const areaTypesMobile =  document.querySelector('.dropdown-select');
+const areaTypesMobile = document.querySelector('.dropdown-select');
 
     axios({
       method: 'GET',

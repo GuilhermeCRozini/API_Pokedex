@@ -179,7 +179,7 @@
       <button class="close js-close-modal-details-pokemon">
         <img src="src/img/close.svg" alt="botão fechar">
       </button>
-      <div class="left-container">
+      <div class="left-container" bgType="">
         <div class="icon">
 <!--Este icone é apenas para simular, já que virá pelo lado da API-->
           <img src="" alt="" id="js-image-type-modal">
@@ -193,9 +193,7 @@
           <h2 id="js-name-pokemon-modal"></h2>
           <span id="js-code-pokemon-modal"></span>
         </div>
-        <ul class="type" id="js-types-pokemon">
-
-        </ul>
+        <ul class="type" id="js-types-pokemon"></ul>
         <ul class="info">
           <li>
             <span>Height</span>
@@ -205,27 +203,26 @@
             <span>Weight</span>
             <strong id="js-weight-pokemon"></strong>
           </li>
-<!--          <li>
+          <!--<li>
             <span>Category</span>
             <strong id="js-category-pokemon">Seed</strong>
-          </li> -->
+          </li>-->
           <li>
-            <span>Abilities</span>
-            <strong id="js-main-abilities-pokemon"></strong>
+            <span id="js-show-more-abilities">Abilities</span>
+            <div id="div-ability"></div>
+            <!--<strong id="js-main-abilities-pokemon"></strong>-->
           </li>
         </ul>
         <div class="weak">
           <h4>Weaknesses</h4>
-          <ul id="js-area-weak">
-
-          </ul>
+          <ul id="js-area-weak"></ul>
         </div>
         <div class="stats">
           <h5>Stats</h5>
-          <div class="all-stats">
+          <div class="all">
             <div class="item">
               <span>HP</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-hp"></div>
                 <ul class="separator">
                   <li></li>
@@ -237,7 +234,7 @@
             </div>
             <div class="item">
               <span>Attack</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-attack"></div>
                 <ul class="separator">
                   <li></li>
@@ -249,7 +246,7 @@
             </div>
             <div class="item">
               <span>Defense</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-defense"></div>
                 <ul class="separator">
                   <li></li>
@@ -261,7 +258,7 @@
             </div>
             <div class="item">
               <span>Sp. Attack</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-sp-attack"></div>
                 <ul class="separator">
                   <li></li>
@@ -273,7 +270,7 @@
             </div>
             <div class="item">
               <span>Sp. Defense</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-sp-defense"></div>
                 <ul class="separator">
                   <li></li>
@@ -285,7 +282,7 @@
             </div>
             <div class="item">
               <span>Speed</span>
-              <div class="status">
+              <div class="bar-status">
                 <div class="bar" id="js-stats-speed"></div>
                 <ul class="separator">
                   <li></li>
