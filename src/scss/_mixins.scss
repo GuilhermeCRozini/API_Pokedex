@@ -85,6 +85,233 @@
   }
 }
 
+@mixin pokeColorTypeActive {
+  &.all {
+    span {
+      color: #3F5DB3;
+    }
+  }
+  &.ghost {
+    span {
+      color: #616EB7;
+    }
+  }
+  &.bug {
+    span {
+      color: #9BBA48;
+    }
+}
+  &.dark {
+    span {
+      color: #595761;
+    }
+}
+  &.dragon {
+    span {
+      color: #2C6AC1;
+    }
+}
+  &.electric {
+    span {
+      color: #D4BC34;
+    }
+}
+  &.fairy {
+    span {
+      color: #E296E1;
+    }
+}
+  &.fighting {
+    span {
+      color: #C44D61;
+    }
+}
+  &.ground {
+    span {
+      color: #CE8056;
+    }
+}
+  &.ice {
+    span {
+      color: #71BAAC;
+    }
+}
+  &.normal {
+    span {
+      color: #909090;
+    }
+}
+  &.poison {
+    span {
+      color: #AC6ACA;
+    }
+}
+  &.psychic {
+    span {
+      color: #EB8B85;
+    }
+}
+  &.rock {
+    span {
+      color: #84BEB3;
+    }
+}
+  &.grass {
+    span {
+      color: #73B861;
+    }
+}
+  &.steel {
+    span {
+      color: #6594A1;
+    }
+}
+  &.water {
+    span {
+      color: #4F77BE;
+    }
+}
+  &.fire {
+    span {
+      color: #E96303;
+    }
+}
+  &.flying {
+    span {
+      color: #758CBD;
+    }
+}
+}
+
+@mixin pokeBackgroundColorTypeNames {
+  &.grass {
+    .image {
+      &:after {
+        background-color: rgba(114, 184, 97, 0.2);
+      }
+    }
+  }
+  &.bug {
+    .image {
+      &:after {
+        background-color: rgba(155, 186, 72, 0.2);
+      }
+    }
+  }
+  &.dark {
+    .image {
+      &:after {
+        background-color: rgba(89, 87, 97, 0.2);
+      }
+    }
+  }
+  &.dragon {
+    .image {
+      &:after {
+        background-color: rgba(44, 106, 193, 0.2);
+      }
+    }
+  }
+  &.electric {
+    .image {
+      &:after {
+        background-color: rgba(212, 188, 52, 0.2);
+      }
+    }
+  }
+  &.fairy {
+    .image {
+      &:after {
+        background-color: rgba(226, 150, 225, 0.2);
+      }
+    }
+  }
+  &.fighting {
+    .image {
+      &:after {
+        background-color: rgba(196, 77, 97, 0.2);
+      }
+    }
+  }
+  &.ground {
+    .image {
+      &:after {
+        background-color: rgba(206, 128, 86, 0.2);
+      }
+    }
+  }
+  &.ice {
+    .image {
+      &:after {
+        background-color: rgba(113, 186, 172, 0.2);
+      }
+    }
+  }
+  &.normal {
+    .image {
+      &:after {
+        background-color: rgba(144, 144, 144, 0.2);
+      }
+    }
+  }
+  &.poison {
+    .image {
+      &:after {
+        background-color: rgba(172, 106, 202, 0.2);
+      }
+    }
+  }
+  &.psychic {
+    .image {
+      &:after {
+        background-color: rgba(235, 139, 133, 0.2);
+      }
+    }
+  }
+  &.rock {
+    .image {
+      &:after {
+        background-color: rgba(132, 190, 179, 0.2);
+      }
+    }
+  }
+  &.steel {
+    .image {
+      &:after {
+        background-color: rgba(101, 148, 161, 0.2);
+      }
+    }
+  }
+  &.water {
+    .image {
+      &:after {
+        background-color: rgba(79, 119, 190, 0.2);
+      }
+    }
+  }
+  &.fire {
+    .image {
+      &:after {
+        background-color: rgba(233, 99, 3, 0.2);
+      }
+    }
+  }
+  &.flying {
+    .image {
+      &:after {
+        background-color: rgba(117, 140, 189, 0.2);
+      }
+    }
+  }
+  &.ghost {
+    .image {
+      &:after {
+        background-color: rgba(97, 110, 183, 0.2);
+      }
+    }
+  }
+}
+
 @mixin pokeBackgroundType {
   &[type-pokemon-modal='grass'] {
     .box {
