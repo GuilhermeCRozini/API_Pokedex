@@ -5,7 +5,7 @@
 }
 
 @mixin tagTypeSize {
-  width: 5.7038rem;
+  width: 4.0788rem;
   height: 1.5rem;
   text-align: center;
 }
@@ -82,5 +82,134 @@
   &.ghost {
     color: var(--type-ghost);
     background-color: rgba(97, 110, 183, 0.1);
+  }
+}
+
+@mixin pokeBackgroundType {
+  &[type-pokemon-modal='grass'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/grass.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='bug'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/bug.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='dragon'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/dragon.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='electric'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/electric.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fairy'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fairy.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fighting'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fighting.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ground'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ground.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ice'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ice.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='normal'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/normal.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='poison'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/poison.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='psychic'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/psychic.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='rock'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/rock.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='ghost'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/ghost.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='steel'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/steel.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='water'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/water.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='fire'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/fire.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='flying'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/flying.svg');
+      }
+    }
+  }
+  &[type-pokemon-modal='dark'] {
+    .box {
+      .left-container {
+        background-image: url('../img/bg-types/dark.svg');
+      }
+    }
   }
 }

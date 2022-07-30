@@ -333,7 +333,7 @@
   }
   .image {
     position: relative;
-    width: 12.5rem;
+    width: 20rem;
     height: 12.5rem;
     @include centerTotalFlex;
 //Centralizando a div
@@ -375,14 +375,14 @@
       margin-bottom: .625rem;
     }
   }
-  @media(max-width: 75rem) {
+  @media(max-width: 1200px) {
     max-width: 100%;
   }
 }
 
 .tag-type {
   display: inline-block;
-  padding: 0 1.5625rem;
+  //padding: 0 1.5625rem;
   line-height: 1.5rem;
   border-radius: .125rem;
   font-weight: 600;
@@ -488,7 +488,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 31.75rem;
+  margin-top: 7.1875rem;
 //Para deixar como o maior z-index do site
   z-index: 2022;
   display: flex;
@@ -498,132 +499,7 @@
   opacity: 0;
   pointer-events: none;
   transition: all .3s;
-  &[type-pokemon-modal='grass'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/grass.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='bug'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/bug.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='dragon'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/dragon.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='electric'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/electric.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='fairy'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/fairy.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='fighting'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/fighting.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='ground'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/ground.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='ice'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/ice.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='normal'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/normal.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='poison'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/poison.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='psychic'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/psychic.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='rock'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/rock.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='ghost'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/ghost.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='steel'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/steel.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='water'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/water.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='fire'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/fire.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='flying'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/flying.svg');
-      }
-    }
-  }
-  &[type-pokemon-modal='dark'] {
-    .box {
-      .left-container {
-        background-image: url('../img/bg-types/dark.svg');
-      }
-    }
-  }
+  @include pokeBackgroundType;
   .overlay {
     position: fixed;
     top: 0;
@@ -631,21 +507,21 @@
     width: 100%;
     height: 100%;
 //Será o menor z-index dentro do modal
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 0;
+    background-color: rgba(0, 0, 0, 0.5);
   }
   .box {
     position: relative;
-    z-index: 2;
     width: 100%;
     max-width: 44.375rem;
     height: 31.75rem;
     background-color: #FFFFFF;
+    z-index: 1;
     box-shadow: 0rem .625rem 2.5rem rgba(13, 12, 71, 0.05);
     border-radius: 1rem;
     display: flex;
 //Animação quando eu clicar no card, ele irá abrir, o box virá de baixo para cima
-    transform: translateY(3.125rem);
+    transform: translateY(2.5rem);
     transition: transform .3s ease-in;
     .close {
 //O botão fechar está localizado acima do box, então irei definir sua position como absolute
@@ -657,7 +533,6 @@
       height: 2.25rem;
       background-color: #FFFFFF;
       border-radius: .5rem;
-      border: 0;
       @include centerTotalFlex;
     }
     .left-container {
@@ -667,9 +542,9 @@
       max-width: 11.9375rem;
       background-repeat: no-repeat;
       background-position: center center;
-      display: flex;
+      /*display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-end;*/
       .icon {
         position: absolute;
         top: 1.25rem;
@@ -691,8 +566,9 @@
       }
     }
     .right-container {
-      margin: 1.8125rem 4.5rem 1.8125rem 4.5rem;
+      padding: 1.8125rem 4.5rem 1.8125rem 4.5rem;
       width: 100%;
+      max-width: 32.4375rem;
       .name {
         display: flex;
         align-items: flex-end;
@@ -720,10 +596,9 @@
           display: flex;
           align-items: center;
 //Se tiver mais de 4 tags aqui, irá quebrar automaticamente para baixo
-          flex-wrap: wrap;
+          //flex-wrap: wrap;
           width: 100%;
-          margin-bottom: 1.5625rem;
-          margin-inline: auto;
+          margin-bottom: 2rem;
           li {
 //Não quero que aplique no primeiro
             &:not(:first-child) {
@@ -734,11 +609,12 @@
         .info {
           display: flex;
           align-items: flex-start;
-          height: 4.4375rem;
-          margin-bottom: .5625rem;
+          height: 100%;
+          max-height: 4.4375rem;
+          margin-bottom: .9375rem;
           li {
             &:not(:first-child) {
-              margin-left: 4.8rem;
+              margin-left: 3rem;
             }
             span {
               display: block;
@@ -762,30 +638,33 @@
         .weak {
           margin-bottom: .625rem;
           h4 {
-            position: relative;
-            top: -0.3125rem;
+            //position: relative;
+            //top: -0.3125rem;
             font-weight: 600;
             font-size: .8125rem;
             line-height: 1rem;
             letter-spacing: -0.01em;
             color: #4D5053;
-            margin-bottom: 1rem;
+            margin-bottom: 1.4375rem;
           }
           ul {
+            //height: 4.25rem;
+            //**display: flex;
+            //**align-items: center;
+            //**flex-wrap: wrap;
             position: relative;
             top: -0.625rem;
-            height: 4.25rem;
-            display: flex;
-            align-items: center;
             width: 100%;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            gap: .125rem;
             margin-bottom: .8125rem;
             li {
               margin-bottom: .625rem;
-              margin-left: .625rem;
-              &:not(:last-child) {
+              margin-left: .3125rem;
+              /*&:not(:last-child) {
                 margin-right: .625rem;
-              }
+              }*/
             }
           }
         }
@@ -801,10 +680,10 @@
             margin-bottom: 1rem;
           }
           .all {
-            width: 23.4375rem;
-            height: 9.6875rem;
+            /*width: 23.4375rem;
+            height: 9.6875rem;*/
             .item {
-              margin-left: .625rem;
+              //margin-left: .625rem;
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -844,7 +723,6 @@
                   top: 0;
                   left: 0;
                   width: 100%;
-                  height: 100%;
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -867,21 +745,27 @@
       align-items: flex-end;
       .box {
         flex-direction: column;
+        top: 12.5rem;
         width: 100%;
-        height: 90%;
+        max-width: 414.4px;
+        //height: 48.7206rem;
+        height: 42.5625rem;
         .close {
+          top: -3.125rem;
+          border-radius: 100%;
           width: 3.125rem;
           height: 3.125rem;
-          top: -3.125rem;
-          border-radius: .5rem .5rem 0 0;
           img {
             width: 1.5625rem;
           }
         }
-        .left-container {
+        .left-container{
           max-width: 100%;
           height: 7.8125rem;
           background-size: cover;
+          .icon {
+            margin-right: 2.1875rem;
+          }
           .image {
             left: 50%;
             bottom: -1.5625rem;
@@ -890,166 +774,59 @@
             img {
               width: 100%;
               height: 100%;
-      //Independente do tamanho da imagem, ela irá ficar posicionada corretamente na área designada.
               object-fit: cover;
             }
           }
         }
         .right-container {
-          padding: 2.1875rem 7.2rem 2.9rem 7.4rem;
-          width: 100%;
-          //padding: 35px 3.75rem 1.4375rem 3.75rem;
-          //padding: 40px 24px;
+          padding: 2.5rem 1.5rem;
           .name {
-            //justify-content: center;
-            display: flex;
-            align-items: flex-end;
-            margin-bottom: .625rem;
-            h2 {
-              font-family: 'Montserrat', sans-serif;
-              font-weight: bold;
-              font-size: 1.75rem;
-              line-height: 2.125rem;
-              letter-spacing: -0.01em;
-              color: #2F3133;
-            }
-            span {
-              font-family: 'Montserrat', sans-serif;
-              font-size: 1rem;
-              line-height: 1.25rem;
-              letter-spacing: -0.01em;
-              color: #7A7D80;
-              position: relative;
-              top: -0.1875rem;
-              margin-left: .5rem;
-            }
+            justify-content: center;
           }
           .type {
-            //justify-content: center;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            width: 100%;
-            margin-bottom: 2rem;
-            li {
-              &:not(:first-child) {
-                margin-left: .625rem;
-              }
-            }
+            justify-content: center;
           }
           .info {
-            //justify-content: center;
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: .9375rem;
-            li {
-              &:not(:first-child) {
-                margin-left: 3rem;
-              }
-              span {
-                display: block;
-                font-size: .8125rem;
-                line-height: 1rem;
-                letter-spacing: -0.01em;
-                color: #7A7D80;
-                margin-bottom: .25rem;
-              }
-              strong {
-                font-weight: 600;
-                font-size: .875rem;
-                line-height: 1.0625rem;
-                letter-spacing: -0.01em;
-                color: #2F3133;
-              }
-            }
+            justify-content: center;
           }
           .weak {
-            margin-bottom: .625rem;
-            /*/*//*/*////////
-            //height: 100px;
             h4 {
-              //text-align: center;
-              font-weight: 600;
-              font-size: .8125rem;
-              line-height: 1rem;
-              letter-spacing: -0.01em;
-              color: #4D5053;
-              margin-bottom: 1rem;
+              text-align: center;
             }
             ul {
-              display: flex;
-              align-items: center;
-              width: 100%;
-              flex-wrap: wrap;
-              /*height: 68px;
               display: grid;
               grid-template-columns: 1fr 1fr 1fr;
-              grid-gap: 10px;
-              margin-inline: auto;*/
+              grid-gap: .625rem;
               li {
-                margin-bottom: .625rem;
                 &:not(:first-child) {
-                  //margin: 0;
-                  margin-right: .625rem;
+                  margin: 0;
                 }
                 .tag-type {
                   width: 100%;
                   text-align: center;
-                  @include centerTotalFlex;
                 }
               }
             }
           }
           .stats {
+            h5 {
+              text-align: center;
+            }
             .all {
               .item {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                &:not(:last-child) {
-                  margin-bottom: .8125rem;
-                }
-                span {
-                  display: block;
-                  font-size: .75rem;
-                  line-height: .9375rem;
-                  color: #7A7D80;
-                  width: 4.25rem;
-                }
+                /*span {
+                  width: 6.125rem;
+                  margin-right: .625rem;
+                }*/
                 .bar-status {
-                  position: relative;
-                  width: 100%;
-                  max-width: 17.6875rem;
-                  height: .1875rem;
-                  background-color: #EFF3F6;
-                  overflow: hidden;
-                  .bar {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 56%;
-                    height: 100%;
-                    z-index: 0;
-                    background-color: #C20001;
-                  }
+                  max-width: 75%;
                   .separator {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  li {
-                    width: .25rem;
-                    height: .25rem;
-                    background-color: #ffffff;
-                    &:not(:first-child) {
-                      margin-left: 3.375rem;
+                    li {
+                      &:not(:first-child) {
+                        margin-left: 19%;
+                      }
                     }
                   }
-                 } 
                 }
               }
             }
