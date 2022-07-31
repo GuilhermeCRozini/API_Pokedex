@@ -468,9 +468,6 @@
           max-width: 100%;
           height: 7.8125rem;
           background-size: cover;
-          /*.icon {
-            //margin-right: 5px;
-          }*/
           .image {
             margin-inline: auto;
             bottom: -1.5625rem;
@@ -538,7 +535,22 @@
         }
       }
     }
-  }
+    @media(max-width: 450px) {
+      .box {
+        height: 83%;
+          .image {
+            left: -2%;
+          }
+        }
+    }
+// Telas como do Galaxy S8+
+    @media(max-width: 370px) {
+      .box {
+        top: -1%;
+        height: 90%;
+        }
+      }  
+    }
 
 //Vou querer que o modal apareça quando o meu HTML (Que seria como o pai de todos do meu Documento HTML), contenha uma classe chamada open-modal
 .open-modal {
