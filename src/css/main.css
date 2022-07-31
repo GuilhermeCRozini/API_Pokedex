@@ -956,7 +956,7 @@ ul {
     left: -2%;
   }
 }
-@media (max-width: 370px) {
+@media (max-width: 380px) {
   .modal .box {
     top: -1%;
     height: 90%;
