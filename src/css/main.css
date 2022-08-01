@@ -858,7 +858,7 @@ ul {
 .modal .box .right-container .stats .all .item .bar-status .separator li:not(:first-child) {
   margin-left: 3.375rem;
 }
-@media (min-width: 560px) {
+@media screen and (min-width: 560px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -942,7 +942,7 @@ ul {
     margin-left: 19%;
   }
 }
-@media (min-width: 480px) and (max-width: 559px) {
+@media screen and (min-width: 480px) and (max-width: 559px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1026,7 +1026,7 @@ ul {
     margin-left: 19%;
   }
 }
-@media (min-width: 401px) and (max-width: 479px) {
+@media screen and (min-width: 401px) and (max-width: 479px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1037,7 +1037,7 @@ ul {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    top: -8%;
+    top: -5%;
     width: 100%;
     height: 78%;
   }
@@ -1110,7 +1110,7 @@ ul {
     margin-left: 19%;
   }
 }
-@media (min-width: 365px) and (max-width: 400px) {
+@media screen and (min-width: 365px) and (max-width: 400px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1194,7 +1194,7 @@ ul {
     margin-left: 19%;
   }
 }
-@media (min-width: 335px) and (max-width: 364px) {
+@media screen and (min-width: 335px) and (max-width: 364px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
