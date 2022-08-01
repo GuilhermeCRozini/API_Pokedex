@@ -347,6 +347,14 @@
 //Espaçamento entre os cards
         grid-gap: 2rem;
         margin-bottom: 4.25rem;
+        .card-pokemon {
+          .image {
+            .thumb-img {
+            width: 9.375rem;
+            height: 11.25rem;
+            }
+          }
+        }
       }
       .btn-load-more {
         display: table;
