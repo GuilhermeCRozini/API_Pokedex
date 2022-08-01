@@ -515,10 +515,6 @@
             }
             .all {
               .item {
-                /*span {
-                  width: 6.125rem;
-                  margin-right: .625rem;
-                }*/
                 .bar-status {
                   max-width: 75%;
                   .separator {
@@ -535,21 +531,27 @@
         }
       }
     }
-    @media(max-width: 450px) {
+    @media(max-width: 480px) {
       .box {
-        height: 83%;
+        //height: 83%;
+          height: 77%;
           .image {
             left: -2%;
           }
-        }
+      }
     }
-    @media(max-width: 380px) {
+    @media (max-width: 420px) and (max-height: 875px) {
+      .box {
+        height: 78%;
+      }
+    }  
+    @media(max-width: 390px) {
       .box {
         top: -1%;
         height: 90%;
         }
-      }  
-    }
+    }  
+  }
 
 //Vou querer que o modal apareça quando o meu HTML (Que seria como o pai de todos do meu Documento HTML), contenha uma classe chamada open-modal
 .open-modal {

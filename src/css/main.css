@@ -935,12 +935,6 @@ ul {
   .modal .box .right-container .stats h5 {
     text-align: center;
   }
-  .modal .box .right-container .stats .all .item {
-    /*span {
-      width: 6.125rem;
-      margin-right: .625rem;
-    }*/
-  }
   .modal .box .right-container .stats .all .item .bar-status {
     max-width: 75%;
   }
@@ -948,15 +942,20 @@ ul {
     margin-left: 19%;
   }
 }
-@media (max-width: 450px) {
+@media (max-width: 480px) {
   .modal .box {
-    height: 83%;
+    height: 77%;
   }
   .modal .box .image {
     left: -2%;
   }
 }
-@media (max-width: 380px) {
+@media (max-width: 420px) and (max-height: 875px) {
+  .modal .box {
+    height: 78%;
+  }
+}
+@media (max-width: 390px) {
   .modal .box {
     top: -1%;
     height: 90%;
