@@ -858,7 +858,7 @@ ul {
 .modal .box .right-container .stats .all .item .bar-status .separator li:not(:first-child) {
   margin-left: 3.375rem;
 }
-@media (min-width: 560px) and (max-width: 710px) {
+@media (min-width: 560px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;

@@ -447,7 +447,7 @@
         }
       }
     }
-    @media(min-width: 560px) and (max-width: 710px){
+    @media (min-width: 560px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -531,7 +531,7 @@
         }
       }
     }
-    @media(min-width: 480px) and (max-width: 559px) {
+    @media (min-width: 480px) and (max-width: 559px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
