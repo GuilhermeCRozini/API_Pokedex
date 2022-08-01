@@ -1304,6 +1304,10 @@ footer .text p {
 .s-all-info-pokemons .top .search {
   margin-top: 1.375rem;
 }
+.s-all-info-pokemons .top .search .icon[disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
 .s-all-info-pokemons .area-all {
   display: -webkit-box;
   display: -ms-flexbox;

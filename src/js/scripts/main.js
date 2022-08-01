@@ -192,6 +192,9 @@ function openDetailsPokemon() {
   // Adicionando a classe open-modal no meu HTML
     document.documentElement.classList.add('open-modal');
 
+  //Enquanto o Modal estiver aberto, o scroll ficará desativado
+    document.documentElement.style.overflow = 'hidden';
+
   //O this pega onde estou clicando
     let codePokemon = this.getAttribute('code-pokemon');
     let imagePokemon = this.querySelector('.thumb-img');
@@ -338,6 +341,9 @@ function openDetailsPokemon() {
   function closeDetailsPokemon() {
     // Adicionando a classe open-modal no meu HTML
       document.documentElement.classList.remove('open-modal');
+
+    //  Reativa o scroll da página quando fechar o modal
+      document.documentElement.style.overflow = 'auto';
     }
 
 // Script para listar todos os tipo de Pokémon
@@ -519,14 +525,31 @@ let countPagination = 10;
 /********************** FUNCIONALIDADE DO SEARCH **********************/
 
 const btnSearch = document.getElementById('js-btn-search');
+//Botão iniciará desativado
+  btnSearch.disabled = true;
 const inputSearch = document.getElementById('js-input-search');
 
-btnSearch.addEventListener('click', searchPokemon)
+//Event listener que escuta mudanças no input
+  addEventListener('input', () => {
+  //Buscando conteúdo do input
+    let conteudo = inputSearch.value;
+    //Validando conteúdo do input
+      if (conteudo !== null && conteudo !== '') {
+      //Habilita o botão
+        btnSearch.disabled = false;
+      } else {
+    //Desabilita o botão se o conteúdo do input estiver em branco
+        btnSearch.disabled = true;
+      }
+  })
+
+btnSearch.addEventListener('click', searchPokemon);
 
 inputSearch.addEventListener('keyup', (event) => {
 //Capturando o evento do ENTER (Quando clica no enter do teclado para buscar)
 //Verificação se o botão que eu cliquei é o ENTER
-  if(event.code === 'Enter') {
+//Só funcionará se tiver algo digitado dentro do input
+  if(event.code === 'Enter' && inputSearch.value.length > 0) {
     searchPokemon();
   }
 })

@@ -222,6 +222,10 @@
     }
     .search {
       margin-top: 1.375rem;
+      .icon[disabled] {
+        pointer-events: none;
+        opacity: 0.5;
+      }
     }
   }
   .area-all {
