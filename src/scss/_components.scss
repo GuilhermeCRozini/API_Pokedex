@@ -447,7 +447,7 @@
         }
       }
     }
-    @media only screen and (min-width: 560px) {
+    /*@media only screen and (min-width: 560px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -616,7 +616,7 @@
           }
         }
       }
-    }
+    }*/
     @media only screen and (min-width: 401px) and (max-width: 479px) {
       align-items: flex-end;
       .box {
@@ -703,7 +703,7 @@
         }
       }
     }
-    @media only screen and (min-width: 365px) and (max-width: 400px) {
+    /*@media only screen and (min-width: 365px) and (max-width: 400px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -874,7 +874,7 @@
           }
         }
       }
-    }
+    }*/
   }
 
 //Vou querer que o modal apareça quando o meu HTML (Que seria como o pai de todos do meu Documento HTML), contenha uma classe chamada open-modal
