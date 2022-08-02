@@ -629,11 +629,14 @@
         .close {
           top: .625rem;
           //top: -3.4375rem;
-          right: .625rem;
-          border-radius: 100%;
+          //right: .625rem;
+          top: auto;
+          right: -3px;
+          z-index: 1;
+          border-radius: 0 .625rem .625rem .625rem;
           margin-right: .1875rem;
           width: 3.125rem;
-          height: 3.125rem;*/
+          height: 2.25rem;
           img {
             width: 1.5625rem;
           }
@@ -643,8 +646,8 @@
           height: 7.8125rem;
           background-size: cover;
           .icon {
-            top: 10px;
-            left: 10px;
+            margin-inline: auto;
+            left: -320px;
           }
           .image {
             margin-inline: auto;
