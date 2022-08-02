@@ -1037,16 +1037,16 @@ ul {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    top: -5%;
+    top: -1%;
     width: 100%;
-    height: 78%;
+    height: 95%;
   }
   .modal .box .close {
-    top: -3.4375rem;
+    /*top: -3.4375rem;
     border-radius: 100%;
-    margin-right: 0.1875rem;
+    margin-right: .1875rem;
     width: 3.125rem;
-    height: 3.125rem;
+    height: 3.125rem;*/
   }
   .modal .box .close img {
     width: 1.5625rem;
