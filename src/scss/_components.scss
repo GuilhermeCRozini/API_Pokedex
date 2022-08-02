@@ -633,7 +633,7 @@
           top: auto;
           right: -3px;
           z-index: 1;
-          border-radius: 0 .625rem .625rem .625rem;
+          border-radius: 0 0 .625rem .625rem;
           margin-right: .1875rem;
           width: 3.125rem;
           height: 2.25rem;
@@ -647,7 +647,7 @@
           background-size: cover;
           .icon {
             margin-inline: auto;
-            left: -320px;
+            left: -20rem;
           }
           .image {
             margin-inline: auto;
