@@ -1808,6 +1808,19 @@ footer .text p {
     margin: 0 auto;
     margin-bottom: 3rem;
   }
+  .s-all-info-pokemons .area-all .right-container .all .conteudo-erro {
+    width: 100%;
+    height: 100%;
+  }
+  .s-all-info-pokemons .area-all .right-container .all .conteudo-erro span {
+    margin-inline: auto;
+  }
+  .s-all-info-pokemons .area-all .right-container .all .conteudo-erro span .text-erro {
+    text-align: center;
+  }
+  .s-all-info-pokemons .area-all .right-container .all .conteudo-erro span .imgErro {
+    margin-bottom: 3.75rem;
+  }
 }
 
 .area-all {
@@ -1835,6 +1848,7 @@ footer .text p {
 }
 .area-all .right-container .all .conteudo-erro span .text-erro {
   margin-inline: auto;
+  margin: 0 0 0 13.5px;
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   font-size: 1.625rem;

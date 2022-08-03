@@ -362,6 +362,7 @@
       }
     }
   }
+
 //Tablet na vertical ou monitores menores
   @media(max-width: 1200px) {
     .top {
@@ -387,6 +388,7 @@
       }
     }
   }
+
 //Tablet
   @media(max-width: 768px) {
     margin-top: -16.125rem;
@@ -402,6 +404,7 @@
       }
     }   
   }
+  
 //Mobile
   @media(max-width: 560px) {
     margin-top: -21.25rem;
@@ -431,6 +434,19 @@
           max-width: 86%;
           margin: 0 auto;
           margin-bottom: 3rem;
+          .conteudo-erro {
+            width: 100%;
+            height: 100%;
+            span {
+              margin-inline: auto;
+              .text-erro {
+                text-align: center;
+              }
+              .imgErro {
+                margin-bottom: 3.75rem;
+              }
+            }
+          }
         }
       }
     }
@@ -452,6 +468,7 @@
           flex-direction: column;
           .text-erro {
             margin-inline: auto;
+            margin: 0 0 0 13.5px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
             font-size: 1.625rem;

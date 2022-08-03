@@ -426,7 +426,7 @@ let countPagination = 10;
                 imagePok: sprites.other.dream_world.front_default,
                 type: types[0].type.name
               }
- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////             
+  
   //Só cria o card se tiver a imagem do Pokémon
               if(infoCard.imagePok) {
                 createCardPokemon(infoCard.code, infoCard.type, infoCard.nome, infoCard.imagePok); 
