@@ -440,3 +440,9 @@
     }
   }
 }
+
+@mixin animacaoDeBorda {
+  &::before {
+    animation-delay: $anime-time * -.5;
+  }
+}

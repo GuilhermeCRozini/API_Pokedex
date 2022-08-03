@@ -260,9 +260,7 @@
       }
       .image {
         position: relative;
-        //left: 20px;
         right: -1.5625rem;
-        //bottom: 131px;
         width: 100%;
         max-width: 12.625rem;
         img {
@@ -272,9 +270,7 @@
     }
     .right-container {
       padding: 1.8125rem 4.5rem 1.3125rem 4.5rem;
-      //padding: 2.1875rem 4.5rem 1.8125rem 4.625rem;
       width: 100%;
-      //max-width: 32.4375rem;**********************************
       .name {
         display: flex;
         align-items: flex-end;
@@ -316,7 +312,6 @@
           display: flex;
           align-items: flex-start;
           justify-content: space-between;
-          //height: 100%;
           height: 4.4375rem;
           margin-bottom: .9375rem;
           li {
@@ -348,8 +343,6 @@
         .weak {
           margin-bottom: .625rem;
           h4 {
-            //position: relative;
-            //top: -0.3125rem;
             font-weight: 600;
             font-size: .8125rem;
             line-height: 1rem;
@@ -368,17 +361,10 @@
             li {
               margin-bottom: .625rem;
               margin-left: .3125rem;
-              /*&:not(:last-child) {
-                margin-right: .625rem;
-              }*/
             }
           }
         }
         .stats {
-          /****************************************
-          position: relative;
-          top: -0.9375rem; 
-          *////////////////////////////////////////
           h5 {
             font-weight: 600;
             font-size: .8125rem;
@@ -388,10 +374,7 @@
             margin-bottom: 1rem;
           }
           .all {
-            /*width: 23.4375rem;
-            height: 9.6875rem;*/
             .item {
-              //margin-left: .625rem;
               display: flex;
               align-items: center;
               justify-content: space-between;
@@ -447,7 +430,7 @@
         }
       }
     }
-    @media only screen and (min-width: 335px) and (max-width: 364px) {
+    @media screen and (min-width: 335px) and (max-width: 364px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -533,7 +516,7 @@
         }
       }
     }
-    @media only screen and (min-width: 365px) and (max-width: 400px) {
+    @media screen and (min-width: 365px) and (max-width: 400px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -619,7 +602,7 @@
         }
       }
     }
-    @media only screen and (min-width: 401px) and (max-width: 479px) {
+    @media screen and (min-width: 401px) and (max-width: 479px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -714,7 +697,7 @@
         }
       }
     }
-    @media only screen and (min-width: 480px) and (max-width: 559px) {
+    @media screen and (min-width: 480px) and (max-width: 559px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -800,7 +783,7 @@
         }
       }
     }
-    @media only screen and (min-width: 560px) {
+    /*@media screen and (min-width: 560px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -883,7 +866,7 @@
           }
         }
       }
-    }
+    }*/
   }
 
 //Vou querer que o modal apareça quando o meu HTML (Que seria como o pai de todos do meu Documento HTML), contenha uma classe chamada open-modal

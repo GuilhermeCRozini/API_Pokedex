@@ -436,3 +436,63 @@
     }
   }
 }
+
+//************************** MENSAGEM DE ERRO **************************
+
+.area-all {
+  width: 100%;
+  .right-container {
+    .all {
+      .conteudo-erro {
+        position: relative;
+        top: -1.25rem;
+        width: 50rem;
+        span {
+          @include centerTotalFlex;
+          flex-direction: column;
+          .text-erro {
+            margin-inline: auto;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.625rem;
+            color: #4D5053;
+          }
+          .imgErro {
+            margin-inline: auto;
+            margin-top: 3.75rem;
+            max-width: 16.25rem;
+            filter: grayscale(60%);
+          }
+          &::after {
+            content: "";
+            position: absolute;
+            margin-inline: auto;
+            margin-top: 3.75rem;
+            width: 16.5625rem;
+            height: 16.5625rem;
+            background-color: #f6bd20;
+            border-radius: 100%;
+            border: .125rem solid black;
+            box-shadow: 1rem .875rem 1.25rem black;
+            opacity: 0.5;
+            z-index: -1;
+            //animation: pulse 0.8s infinite;
+            // }
+            // @keyframes pulse {
+            //   0% {
+            //     transform: scale(1);
+            //     filter: brightness(80%);
+            //   }
+            //   50% {
+            //     filter: brightness(100%);
+            //   }
+            //   100% {
+            //     transform: scale(1.1);
+            //     filter: brightness(120%);
+            //   }
+             }
+          }
+        }
+      }
+    }
+  }
