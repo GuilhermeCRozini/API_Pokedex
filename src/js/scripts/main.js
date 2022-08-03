@@ -521,6 +521,14 @@ inputSearch.addEventListener('keyup', (event) => {
         btnLoadMore.style.display = 'none';
         countPokemons.textContent = 0;
 
+        const sectionPokemons = document.querySelector('.s-all-info-pokemons');
+        const topSection = sectionPokemons.offsetTop;    
+
+            window.scrollTo({
+              top: topSection + 288,
+              behavior: 'smooth'
+            })
+
         const divConteudoErro = document.createElement('div');
         divConteudoErro.className = 'conteudo-erro';
         areaPokemons.appendChild(divConteudoErro);
