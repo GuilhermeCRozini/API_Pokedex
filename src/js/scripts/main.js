@@ -134,7 +134,7 @@ function listingPokemons(urlApi) {
     })
   })
 }
-  listingPokemons('https://pokeapi.co/api/v2/pokemon?limit=9&offset=0')
+  listingPokemons('https://pokeapi.co/api/v2/pokemon/?limit=9&offset=0')
 
 function openDetailsPokemon() {
 
@@ -356,7 +356,7 @@ const btnLoadMore = document.getElementById('js-btn-load-more');
 let countPagination = 10;
 
     function showMorePokemon() {
-      listingPokemons(`https://pokeapi.co/api/v2/pokemon?limit=9&offset=${countPagination}`);
+      listingPokemons(`https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`);
 
       countPagination = countPagination + 9;
     }
@@ -443,7 +443,7 @@ let countPagination = 10;
     } else {
     areaPokemons.innerHTML = '';
 
-    listingPokemons('https://pokeapi.co/api/v2/pokemon?limit=9&offset=0');
+    listingPokemons('https://pokeapi.co/api/v2/pokemon/?limit=9&offset=0');
 
     btnLoadMore.style.display = 'block';
     }
@@ -469,7 +469,7 @@ const inputSearch = document.getElementById('js-input-search');
 btnSearch.addEventListener('click', searchPokemon);
 
 inputSearch.addEventListener('keyup', (event) => {
-  if(event.code === 'Enter' && inputSearch.value.length > 0) {
+  if(event.key === 'Enter' && inputSearch.value.length > 0) {
     searchPokemon();
   }
 })
@@ -545,8 +545,18 @@ inputSearch.addEventListener('keyup', (event) => {
         imgErro.setAttribute('src', 'src/img/sad-pikachu.png');
         imgErro.className = 'imgErro';
         spanErro.appendChild(imgErro);
-
-        //alert('Não foi encontrado nenhum resultado com esta pesquisa!');
       }
     })    
   }
+
+/********************** FUNCIONALIDADE DO SCROLL REVEAL **********************/
+
+  // const scrollReveal = ScrollReveal({reset: true});
+
+  // scrollReveal.reveal(/*'.carregando', */{
+  //   origin: 'top',
+  //   distance: '50px',
+  //   duration: 1200,
+  //   delay: 300,
+  //   reset: false
+  // })
