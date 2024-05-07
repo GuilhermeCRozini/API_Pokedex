@@ -348,32 +348,52 @@ const btnLoadMore = document.getElementById('js-btn-load-more');
 // Initialize the pagination offset to load Pokémons beyond the first page
 let countPagination = 10;
 
-function showMorePokemon() {
-  // Constructs the API URL with limit and offset parameters for pagination
-  const apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`;
-  
-  axios.get(apiUrl).then(response => {
-    // Extract results and sort them by the Pokémon ID in ascending order
-    const sortedPokemons = response.data.results.sort((a, b) => a.id - b.id);
+// Função para criar o atraso
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    // Loop through each sorted Pokémon data to create and display their cards
-    sortedPokemons.forEach(pokemon => {
-      axios.get(pokemon.url).then(detailResponse => {
-        const { name, id, sprites, types } = detailResponse.data;
-        createCardPokemon(
-          id,
-          types[0].type.name,
-          name,
-          sprites.other.dream_world.front_default
-        );
-      });
-    });
+// Helper function to fetch Pokémon details
+async function fetchPokemonDetails(url) {
+  const response = await axios.get(url);
+  return response.data;
+}
+
+function createPokemonCard(pokemon) {
+  const { id, types, name, sprites } = pokemon;
+  createCardPokemon(
+    id,
+    types[0].type.name,
+    name,
+    sprites.other.dream_world.front_default
+  );
+}
+
+async function showMorePokemon() {
+  const apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`;
+
+  try {
+    // Aguarde o atraso antes de continuar
+    await delay(1300);
+
+    const response = await axios.get(apiUrl);
+    const detailPromises = response.data.results.map(pokemon =>
+      fetchPokemonDetails(pokemon.url));
+
+    // Fetch all Pokémon details concurrently
+    const pokemonDetails = await Promise.all(detailPromises);
+
+    // Sort Pokémon by ID after fetching their details
+    pokemonDetails.sort((a, b) => a.id - b.id);
+
+    // Create cards for each Pokémon
+    pokemonDetails.forEach(createPokemonCard);
 
     // Update the pagination offset for the next batch of Pokémon
     countPagination += 9;
-  }).catch(error => {
+  } catch (error) {
     console.error('Failed to load more Pokémon:', error);
-  });
+  }
 }
 
 // Add an event listener to the Load More button to fetch more Pokémon on click
