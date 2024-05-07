@@ -342,19 +342,42 @@ axios({
 
 //*********** Funcionalidade do LOAD MORE ***********/
 
-const btnLoadMore = document.getElementById('js-btn-load-more')
+// Obtain the button element to trigger more Pokémon to load
+const btnLoadMore = document.getElementById('js-btn-load-more');
 
-let countPagination = 10
+// Initialize the pagination offset to load Pokémons beyond the first page
+let countPagination = 10;
 
 function showMorePokemon() {
-  listingPokemons(
-    `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`
-  )
+  // Constructs the API URL with limit and offset parameters for pagination
+  const apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`;
+  
+  axios.get(apiUrl).then(response => {
+    // Extract results and sort them by the Pokémon ID in ascending order
+    const sortedPokemons = response.data.results.sort((a, b) => a.id - b.id);
 
-  countPagination = countPagination + 9
+    // Loop through each sorted Pokémon data to create and display their cards
+    sortedPokemons.forEach(pokemon => {
+      axios.get(pokemon.url).then(detailResponse => {
+        const { name, id, sprites, types } = detailResponse.data;
+        createCardPokemon(
+          id,
+          types[0].type.name,
+          name,
+          sprites.other.dream_world.front_default
+        );
+      });
+    });
+
+    // Update the pagination offset for the next batch of Pokémon
+    countPagination += 9;
+  }).catch(error => {
+    console.error('Failed to load more Pokémon:', error);
+  });
 }
 
-btnLoadMore.addEventListener('click', showMorePokemon)
+// Add an event listener to the Load More button to fetch more Pokémon on click
+btnLoadMore.addEventListener('click', showMorePokemon);
 
 /********************** FUNÇÃO PARA FILTRAR OS POKÉMONS POR TIPO **********************/
 
