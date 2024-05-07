@@ -89,184 +89,64 @@ function createCardPokemon(code, type, nome, imagePok) {
   areaIcon.appendChild(imgType)
 }
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Function to fetch and display Pokémons in an ascending order based on their ID
-function listingPokemons(urlApi) {
-  axios({
-    method: 'GET',
-    url: urlApi
-  }).then(response => {
-    const { results, next, count } = response.data
-    countPokemons.innerText = count
+async function listingPokemons(urlApi) {
+  try {
+    const response = await axios.get(urlApi);
+    await delay(1300); // Atraso de 1.3 segundos
+    const { results, next, count } = response.data;
+    countPokemons.innerText = count;
 
-    // Ordena os Pokémons pelo seu ID em ordem crescente
-    const orderedResults = results.sort((a, b) => a.id - b.id)
+    results.sort((a, b) => a.id - b.id).forEach(async pokemon => {
+      const detailsResponse = await axios.get(pokemon.url);
+      const { name, id, sprites, types } = detailsResponse.data;
 
-    orderedResults.forEach(pokemon => {
-      let urlApiDetails = pokemon.url
+      createCardPokemon(
+        id,
+        types[0].type.name,
+        name,
+        sprites.other.dream_world.front_default
+      );
 
-      axios({
-        method: 'GET',
-        url: `${urlApiDetails}`
-      }).then(response => {
-        const { name, id, sprites, types } = response.data
-
-        const infoCard = {
-          nome: name,
-          code: id,
-          imagePok: sprites.other.dream_world.front_default,
-          type: types[0].type.name
-        }
-
-        createCardPokemon(
-          infoCard.code,
-          infoCard.type,
-          infoCard.nome,
-          infoCard.imagePok
-        )
-        const cardPokemon = document.querySelectorAll('.js-open-details-pokemon')
-
-        cardPokemon.forEach(card => {
-          card.addEventListener('click', openDetailsPokemon)
-        })
-      })
-    })
-  })
+      document.querySelectorAll('.js-open-details-pokemon').forEach(card => {
+        card.addEventListener('click', openDetailsPokemon);
+      });
+    });
+  } catch (error) {
+    console.error('Failed to fetch and list Pokémon:', error);
+  }
 }
 listingPokemons('https://pokeapi.co/api/v2/pokemon/?limit=9&offset=0')
 
-function openDetailsPokemon() {
-  document.documentElement.classList.add('open-modal')
-  document.documentElement.style.overflow = 'hidden'
+async function openDetailsPokemon() {
+  document.documentElement.classList.add('open-modal');
+  document.documentElement.style.overflow = 'hidden';
 
-  //O this pega onde estou clicando
-  let codePokemon = this.getAttribute('code-pokemon')
-  let imagePokemon = this.querySelector('.thumb-img')
-  let iconTypePokemon = this.querySelector('.info .icon img')
-  let namePokemon = this.querySelector('.info h3')
-  let codeStringPokemon = this.querySelector('.info span')
+  const codePokemon = this.getAttribute('code-pokemon');
 
-  const modalDetails = document.getElementById('js-modal-details')
-  const imgPokemonModal = document.getElementById('js-image-pokemon-modal')
-  const iconTypePokemonModal = document.getElementById('js-image-type-modal')
-  const namePokemonModal = document.getElementById('js-name-pokemon-modal')
-  const codePokemonModal = document.getElementById('js-code-pokemon-modal')
-  const heightPokemonModal = document.getElementById('js-height-pokemon')
-  const weightPokemonModal = document.getElementById('js-weight-pokemon')
+  try {
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${codePokemon}`);
+    await delay(1300); // Atraso de 1.3 segundos
+    const { abilities, types, weight, height, stats } = response.data;
 
-  imgPokemonModal.setAttribute('src', imagePokemon.getAttribute('src'))
-  modalDetails.setAttribute('type-pokemon-modal', this.classList[2])
-  iconTypePokemonModal.setAttribute('src', iconTypePokemon.getAttribute('src'))
-
-  namePokemonModal.textContent = namePokemon.textContent
-  codePokemonModal.textContent = codeStringPokemon.textContent
-
-  axios({
-    method: 'GET',
-    url: `https://pokeapi.co/api/v2/pokemon/${codePokemon}`
-  }).then(response => {
-    let data = response.data
-
-    let infoPokemon = {
-      mainAbilities: primeiraLetraMaiuscula(data.abilities[0].ability.name),
-      types: data.types,
-      weight: data.weight,
-      height: data.height,
-      abilities: data.abilities,
-      stats: data.stats,
-      //Acessando o tipo principal do Pokémon, para pegar todas as fraquezas relacionadas à esse tipo
-      urlType: data.types[0].type.url
-    }
-
-    function listingTypesPokemon() {
-      const areaTypesModal = document.getElementById('js-types-pokemon')
-
-      areaTypesModal.innerText = ''
-
-      let arrayTypes = infoPokemon.types
-
-      arrayTypes.forEach(itemType => {
-        let itemList = document.createElement('li')
-        areaTypesModal.appendChild(itemList)
-
-        let spanList = document.createElement('span')
-        spanList.classList = `tag-type ${itemType.type.name}`
-        spanList.textContent = primeiraLetraMaiuscula(itemType.type.name)
-        itemList.appendChild(spanList)
-      })
-    }
-
-    function listingWeaknesses() {
-      const areaWeak = document.getElementById('js-area-weak')
-
-      areaWeak.innerHTML = ''
-
-      axios({
-        method: 'GET',
-        url: `${infoPokemon.urlType}`
-      }).then(response => {
-        let weaknesses = response.data.damage_relations.double_damage_from
-
-        weaknesses.forEach(itemType => {
-          let itemListWeak = document.createElement('li')
-          areaWeak.appendChild(itemListWeak)
-
-          let spanList = document.createElement('span')
-          spanList.classList = `tag-type ${itemType.name}`
-          spanList.textContent = primeiraLetraMaiuscula(itemType.name)
-          itemListWeak.appendChild(spanList)
-        })
-      })
-    }
-
-    heightPokemonModal.textContent = `${infoPokemon.height / 10}m`
-    weightPokemonModal.textContent = `${infoPokemon.weight / 10}Kg`
-
-    //**************************** FUNCIONALIDADE MOSTRAR TODAS AS HABILIDADES ****************************/
-
-    function showMoreAbilities() {
-      const AbilitiesModal = document.getElementById('js-show-more-abilities')
-      const divAbility = document.getElementById('div-ability')
-
-      divAbility.innerHTML = ''
-
-      let arrayAbilities = infoPokemon.abilities
-
-      arrayAbilities.forEach(itemAbility => {
-        AbilitiesModal.appendChild(divAbility)
-
-        let strongList = document.createElement('strong')
-        strongList.classList = 'abilityList'
-        strongList.textContent = primeiraLetraMaiuscula(
-          itemAbility.ability.name
-        )
-        divAbility.appendChild(strongList)
-      })
-    }
-
-    //******************************************************************************************************/
-
-    const statsHp = document.getElementById('js-stats-hp')
-    statsHp.style.width = `${infoPokemon.stats[0].base_stat}%`
-
-    const statsAttack = document.getElementById('js-stats-attack')
-    statsAttack.style.width = `${infoPokemon.stats[1].base_stat}%`
-
-    const statsDefense = document.getElementById('js-stats-defense')
-    statsDefense.style.width = `${infoPokemon.stats[2].base_stat}%`
-
-    const statsSpAttack = document.getElementById('js-stats-sp-attack')
-    statsSpAttack.style.width = `${infoPokemon.stats[3].base_stat}%`
-
-    const statsSpDefense = document.getElementById('js-stats-sp-defense')
-    statsSpDefense.style.width = `${infoPokemon.stats[4].base_stat}%`
-
-    const statsSpeed = document.getElementById('js-stats-speed')
-    statsSpeed.style.width = `${infoPokemon.stats[5].base_stat}%`
-
-    listingTypesPokemon()
-    listingWeaknesses()
-    showMoreAbilities()
-  })
+    updatePokemonModal(this, {
+      name: this.querySelector('.info h3').textContent,
+      imageSrc: this.querySelector('.thumb-img').getAttribute('src'),
+      typeIconSrc: this.querySelector('.info .icon img').getAttribute('src'),
+      code: this.querySelector('.info span').textContent,
+      mainAbilities: abilities[0].ability.name,
+      types,
+      weight,
+      height,
+      stats
+    });
+  } catch (error) {
+    console.error('Failed to fetch Pokémon details:', error);
+  }
 }
 
 function closeDetailsPokemon() {
@@ -274,7 +154,18 @@ function closeDetailsPokemon() {
   document.documentElement.style.overflow = 'auto'
 }
 
-// Listando todos os tipo de Pokémon
+function updatePokemonModal(triggerElement, data) {
+  const { name, imageSrc, typeIconSrc, code, mainAbilities, types, weight, height, stats } = data;
+  const modal = document.getElementById('js-modal-details');
+
+  modal.querySelector('#js-image-pokemon-modal').setAttribute('src', imageSrc);
+  modal.querySelector('#js-image-type-modal').setAttribute('src', typeIconSrc);
+  modal.querySelector('#js-name-pokemon-modal').textContent = name;
+  modal.querySelector('#js-code-pokemon-modal').textContent = code;
+  // Update additional modal fields as needed...
+}
+
+// Listando todos os tipos de Pokémon
 
 const areaTypes = document.getElementById('js-type-area')
 const areaTypesMobile = document.querySelector('.dropdown-select')
