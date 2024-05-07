@@ -342,61 +342,44 @@ axios({
 
 //*********** Funcionalidade do LOAD MORE ***********/
 
-// Obtain the button element to trigger more Pokémon to load
 const btnLoadMore = document.getElementById('js-btn-load-more');
-
-// Initialize the pagination offset to load Pokémons beyond the first page
 let countPagination = 10;
 
-// Função para criar o atraso
+// Promisify setTimeout to use with async/await
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Helper function to fetch Pokémon details
-async function fetchPokemonDetails(url) {
-  const response = await axios.get(url);
-  return response.data;
-}
-
-function createPokemonCard(pokemon) {
-  const { id, types, name, sprites } = pokemon;
-  createCardPokemon(
-    id,
-    types[0].type.name,
-    name,
-    sprites.other.dream_world.front_default
-  );
 }
 
 async function showMorePokemon() {
   const apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`;
 
   try {
-    // Aguarde o atraso antes de continuar
+    const response = await axios.get(apiUrl);
+    const pokemonPromises = response.data.results.map(pokemon => axios.get(pokemon.url));
+
+    // Wait for 1.3 seconds before continuing
     await delay(1300);
 
-    const response = await axios.get(apiUrl);
-    const detailPromises = response.data.results.map(pokemon =>
-      fetchPokemonDetails(pokemon.url));
+    const pokemonDetails = await Promise.all(pokemonPromises);
+    const sortedPokemons = pokemonDetails.sort((a, b) => a.data.id - b.data.id);
 
-    // Fetch all Pokémon details concurrently
-    const pokemonDetails = await Promise.all(detailPromises);
+    sortedPokemons.forEach(detailResponse => {
+      const { name, id, sprites, types } = detailResponse.data;
+      createCardPokemon(
+        id,
+        types[0].type.name,
+        name,
+        sprites.other.dream_world.front_default
+      );
+    });
 
-    // Sort Pokémon by ID after fetching their details
-    pokemonDetails.sort((a, b) => a.id - b.id);
-
-    // Create cards for each Pokémon
-    pokemonDetails.forEach(createPokemonCard);
-
-    // Update the pagination offset for the next batch of Pokémon
-    countPagination += 9;
+    countPagination += 9; // Update the pagination offset
   } catch (error) {
     console.error('Failed to load more Pokémon:', error);
+    // Optionally, update the UI to show an error message
   }
 }
 
-// Add an event listener to the Load More button to fetch more Pokémon on click
 btnLoadMore.addEventListener('click', showMorePokemon);
 
 /********************** FUNÇÃO PARA FILTRAR OS POKÉMONS POR TIPO **********************/
