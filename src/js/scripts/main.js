@@ -108,7 +108,7 @@ function updatePokemonModal(triggerElement, data) {
 async function listingPokemons(urlApi) {
   try {
     const response = await axios.get(urlApi);
-    await delay(1500); // Atraso de 1.3 segundos
+    await delay(2.5); // Atraso de 1.3 segundos
     const { results, next, count } = response.data;
     countPokemons.innerText = count;
 
@@ -141,7 +141,7 @@ async function openDetailsPokemon() {
 
   try {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${codePokemon}`);
-    await delay(1500); // Atraso de 1.3 segundos
+    await delay(2.5); // Atraso de 1.3 segundos
     const { abilities, types, weight, height, stats } = response.data;
 
     updatePokemonModal(this, {
@@ -248,8 +248,8 @@ async function showMorePokemon() {
     const response = await axios.get(apiUrl);
     const pokemonPromises = response.data.results.map(pokemon => axios.get(pokemon.url));
 
-    // Wait for 1.5 seconds before continuing
-    await delay(1500);
+    // Wait for 2.5 seconds before continuing
+    await delay(2.5);
 
     const pokemonDetails = await Promise.all(pokemonPromises);
     const sortedPokemons = pokemonDetails.sort((a, b) => a.data.id - b.data.id);
