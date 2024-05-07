@@ -93,6 +93,17 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function updatePokemonModal(triggerElement, data) {
+  const { name, imageSrc, typeIconSrc, code, mainAbilities, types, weight, height, stats } = data;
+  const modal = document.getElementById('js-modal-details');
+
+  modal.querySelector('#js-image-pokemon-modal').setAttribute('src', imageSrc);
+  modal.querySelector('#js-image-type-modal').setAttribute('src', typeIconSrc);
+  modal.querySelector('#js-name-pokemon-modal').textContent = name;
+  modal.querySelector('#js-code-pokemon-modal').textContent = code;
+  // Update additional modal fields as needed...
+}
+
 // Function to fetch and display Pokémons in an ascending order based on their ID
 async function listingPokemons(urlApi) {
   try {
@@ -152,17 +163,6 @@ async function openDetailsPokemon() {
 function closeDetailsPokemon() {
   document.documentElement.classList.remove('open-modal')
   document.documentElement.style.overflow = 'auto'
-}
-
-function updatePokemonModal(triggerElement, data) {
-  const { name, imageSrc, typeIconSrc, code, mainAbilities, types, weight, height, stats } = data;
-  const modal = document.getElementById('js-modal-details');
-
-  modal.querySelector('#js-image-pokemon-modal').setAttribute('src', imageSrc);
-  modal.querySelector('#js-image-type-modal').setAttribute('src', typeIconSrc);
-  modal.querySelector('#js-name-pokemon-modal').textContent = name;
-  modal.querySelector('#js-code-pokemon-modal').textContent = code;
-  // Update additional modal fields as needed...
 }
 
 // Listando todos os tipos de Pokémon
