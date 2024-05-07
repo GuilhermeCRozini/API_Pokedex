@@ -112,7 +112,7 @@ async function listingPokemons(urlApi) {
     const { results, next, count } = response.data;
     countPokemons.innerText = count;
 
-    results.sort((a, b) => a.id - b.id).forEach(async pokemon => {
+    results.sort((a, b) => a.codePokemon - b.codePokemon).forEach(async pokemon => {
       const detailsResponse = await axios.get(pokemon.url);
       const { name, id, sprites, types } = detailsResponse.data;
 
@@ -252,7 +252,7 @@ async function showMorePokemon() {
     await delay(2.5);
 
     const pokemonDetails = await Promise.all(pokemonPromises);
-    const sortedPokemons = pokemonDetails.sort((a, b) => a.data.id - b.data.id);
+    const sortedPokemons = pokemonDetails.sort((a, b) => a.data.codePokemon - b.data.codePokemon);
 
     sortedPokemons.forEach(detailResponse => {
       const { name, id, sprites, types } = detailResponse.data;
@@ -304,7 +304,7 @@ async function filterByTypes() {
       const { pokemon } = response.data;
 
       // Ordenando os Pokémon pelo seu ID, em ordem crescente
-      const sortedPokemons = pokemon.map(p => p.pokemon).sort((a, b) => a.id - b.id);
+      const sortedPokemons = pokemon.map(p => p.pokemon).sort((a, b) => a.codePokemon - b.codePokemon);
       
       countPokemons.textContent = sortedPokemons.length;
 
@@ -381,7 +381,7 @@ function searchPokemon() {
       const { pokemon } = response.data
 
       // Ordena os Pokémons pelo seu ID
-      const orderedPokemons = pokemon.sort((a, b) => a.id - b.id)
+      const orderedPokemons = pokemon.sort((a, b) => a.codePokemon - b.codePokemon)
 
       const { name, id, sprites, types } = orderedPokemons[0]
 
