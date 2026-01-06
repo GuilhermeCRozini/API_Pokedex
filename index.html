@@ -106,7 +106,8 @@
       <div class="top">
         <h2>Select your Pokémon</h2>
         <div class="search">
-          <input type="text" placeholder="Digite o nome ou o código!" id="js-input-search">
+          <input type="text" placeholder="Digite o nome ou o código!" id="js-input-search" list="js-pokemon-suggestions" autocomplete="off">
+          <datalist id="js-pokemon-suggestions"></datalist>
           <button type="button" class="icon" id="js-btn-search">
             <img src="src/img/icon-search.svg" alt="Lupa">
           </button>
