@@ -16,6 +16,10 @@ const cardPokemon = document.querySelectorAll('.js-open-details-pokemon')
 const btnCloseModal = document.querySelector('.js-close-modal-details-pokemon')
 const countPokemons = document.getElementById('js-count-pokemons')
 
+// Usaremos este valor para aplicar um pequeno atraso nas requisições.
+// Deixá-lo em um único lugar facilita a alteração caso você queira um app mais rápido ou mais lento.
+const API_DELAY_MS = 3000;
+
 cardPokemon.forEach(card => {
   card.addEventListener('click', openDetailsPokemon)
 })
@@ -33,6 +37,12 @@ btnDropdownSelect.addEventListener('click', () => {
 })
 
 const areaPokemons = document.getElementById('js-list-pokemons')
+
+// Função utilitária para "pausar" o código por alguns milissegundos.
+// Como é uma Promise, podemos usar "await delay(...)" em qualquer função assíncrona.
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function primeiraLetraMaiuscula(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -89,10 +99,6 @@ function createCardPokemon(code, type, nome, imagePok) {
   areaIcon.appendChild(imgType)
 }
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function updatePokemonModal(triggerElement, data) {
   const { name, imageSrc, typeIconSrc, code, mainAbilities, types, weight, height, stats } = data;
   const modal = document.getElementById('js-modal-details');
@@ -108,24 +114,33 @@ function updatePokemonModal(triggerElement, data) {
 async function listingPokemons(urlApi) {
   try {
     const response = await axios.get(urlApi);
-    await delay(3); // Atraso de 3 segundos
-    const { results, next, count } = response.data;
+    await delay(API_DELAY_MS); // Mantém um leve atraso para evitar sobrecarga em APIs públicas
+    const { results, count } = response.data;
     countPokemons.innerText = count;
 
-    results.sort((a, b) => a.codePokemon - b.codePokemon).forEach(async pokemon => {
-      const detailsResponse = await axios.get(pokemon.url);
-      const { name, id, sprites, types } = detailsResponse.data;
+    // Buscamos os detalhes de cada Pokémon em paralelo e só então ordenamos pelo ID real.
+    const pokemonDetails = await Promise.all(
+      results.map(pokemon => axios.get(pokemon.url).then(res => res.data))
+    );
 
-      createCardPokemon(
-        id,
-        types[0].type.name,
-        name,
-        sprites.other.dream_world.front_default
-      );
+    pokemonDetails
+      .sort((a, b) => a.id - b.id)
+      .forEach(({ name, id, sprites, types }) => {
+        const fallbackImage = sprites.other.dream_world.front_default || sprites.front_default;
 
-      document.querySelectorAll('.js-open-details-pokemon').forEach(card => {
-        card.addEventListener('click', openDetailsPokemon);
+        // Evita criar cards quebrados quando a API não retorna imagem principal.
+        if (!fallbackImage) return;
+
+        createCardPokemon(
+          id,
+          types[0].type.name,
+          name,
+          fallbackImage
+        );
       });
+
+    document.querySelectorAll('.js-open-details-pokemon').forEach(card => {
+      card.addEventListener('click', openDetailsPokemon);
     });
   } catch (error) {
     console.error('Failed to fetch and list Pokémon:', error);
@@ -141,7 +156,7 @@ async function openDetailsPokemon() {
 
   try {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${codePokemon}`);
-    await delay(3); // Atraso de 1.3 segundos
+    await delay(API_DELAY_MS); // Pequeno atraso para evitar várias chamadas rápidas seguidas
     const { abilities, types, weight, height, stats } = response.data;
 
     updatePokemonModal(this, {
@@ -236,11 +251,6 @@ axios({
 const btnLoadMore = document.getElementById('js-btn-load-more');
 let countPagination = 10;
 
-// Promisify setTimeout to use with async/await
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function showMorePokemon() {
   const apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${countPagination}`;
 
@@ -249,18 +259,22 @@ async function showMorePokemon() {
     const pokemonPromises = response.data.results.map(pokemon => axios.get(pokemon.url));
 
     // Wait for 2.5 seconds before continuing
-    await delay(3);
+    await delay(API_DELAY_MS);
 
     const pokemonDetails = await Promise.all(pokemonPromises);
-    const sortedPokemons = pokemonDetails.sort((a, b) => a.data.codePokemon - b.data.codePokemon);
+    const sortedPokemons = pokemonDetails.sort((a, b) => a.data.id - b.data.id);
 
     sortedPokemons.forEach(detailResponse => {
       const { name, id, sprites, types } = detailResponse.data;
+      const fallbackImage = sprites.other.dream_world.front_default || sprites.front_default;
+
+      if (!fallbackImage) return;
+
       createCardPokemon(
         id,
         types[0].type.name,
         name,
-        sprites.other.dream_world.front_default
+        fallbackImage
       );
     });
 
@@ -299,30 +313,25 @@ async function filterByTypes() {
   if (idPokemon) {
     try {
       const response = await axios.get(`https://pokeapi.co/api/v2/type/${idPokemon}`);
-      await delay(3); // Adiciona o atraso de 1.3 segundos aqui
+      await delay(API_DELAY_MS); // Aguarda um pouco para não sobrecarregar a API
 
       const { pokemon } = response.data;
 
-      // Ordenando os Pokémon pelo seu ID, em ordem crescente
-      const sortedPokemons = pokemon.map(p => p.pokemon).sort((a, b) => a.codePokemon - b.codePokemon);
-      
+      // Capturamos os detalhes completos para ter acesso ao ID real e ordenar corretamente.
+      const pokemonDetails = await Promise.all(
+        pokemon.map(p => axios.get(p.pokemon.url).then(res => res.data))
+      );
+
+      const sortedPokemons = pokemonDetails.sort((a, b) => a.id - b.id);
+
       countPokemons.textContent = sortedPokemons.length;
 
-      for (const pok of sortedPokemons) {
-        const detailsResponse = await axios.get(pok.url);
-        const { name, id, sprites, types } = detailsResponse.data;
+      sortedPokemons.forEach(({ name, id, sprites, types }) => {
+        const fallbackImage = sprites.other.dream_world.front_default || sprites.front_default;
+        if (!fallbackImage) return;
 
-        const infoCard = {
-          nome: name,
-          code: id,
-          imagePok: sprites.other.dream_world.front_default,
-          type: types[0].type.name
-        };
-
-        if (infoCard.imagePok) {
-          createCardPokemon(infoCard.code, infoCard.type, infoCard.nome, infoCard.imagePok);
-        }
-      }
+        createCardPokemon(id, types[0].type.name, name, fallbackImage);
+      });
 
       document.querySelectorAll('.js-open-details-pokemon').forEach(card => {
         card.addEventListener('click', openDetailsPokemon);
@@ -376,29 +385,23 @@ function searchPokemon() {
     .then(response => {
       areaPokemons.innerHTML = ''
       btnLoadMore.style.display = 'none'
-      countPokemons.textContent = 1
 
-      const { pokemon } = response.data
+      // A busca retorna apenas um Pokémon; já pegamos os dados necessários diretamente.
+      const { name, id, sprites, types } = response.data
+      const fallbackImage = sprites.other.dream_world.front_default || sprites.front_default
 
-      // Ordena os Pokémons pelo seu ID
-      const orderedPokemons = pokemon.sort((a, b) => a.codePokemon - b.codePokemon)
+      if (fallbackImage) {
+        countPokemons.textContent = 1
 
-      const { name, id, sprites, types } = orderedPokemons[0]
-
-      const infoCard = {
-        nome: name,
-        code: id,
-        imagePok: sprites.other.dream_world.front_default,
-        type: types[0].type.name
-      }
-
-      if (infoCard.imagePok) {
         createCardPokemon(
-          infoCard.code,
-          infoCard.type,
-          infoCard.nome,
-          infoCard.imagePok
+          id,
+          types[0].type.name,
+          name,
+          fallbackImage
         )
+      } else {
+        // Sem imagem não criamos card para evitar layout quebrado.
+        countPokemons.textContent = 0
       }
 
       const cardPokemon = document.querySelectorAll('.js-open-details-pokemon')
