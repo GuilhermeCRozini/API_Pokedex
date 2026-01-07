@@ -880,52 +880,50 @@
   }
 }
 
-// === Responsividade extra (auto-ajuste) ===
-// Para iniciante:
-// - Colocamos este bloco no final para sobrescrever estilos antigos sem quebrar o resto.
-// - Essas regras deixam o layout confortável em celulares/tablets.
 
-@media(max-width: 560px) {
-  // Busca (input) em celular:
-  // - max-width: 100% evita ficar "espremido"
-  // - font-size: 16px evita o Safari (iPhone) dar zoom automático no input
-  .search {
-    max-width: 100%;
-    border-radius: 1.25rem;
-    height: auto;
-    padding: 0.75rem 1rem;
-    input[type=text] {
-      width: 100%;
-      min-width: 0;
-      font-size: 16px;
-    }
-  }
-
-  // Modal em celular:
-  // - usa quase a tela toda
-  // - permite rolagem interna para o conteúdo não "cortar"
+/* ===========================================================
+   AJUSTES RESPONSIVOS DO MODAL (Mobile/Tablet)
+   Para iniciantes:
+   - O HTML do modal já tem um botão com classe ".close" e o ícone (close.svg).
+   - Em telas grandes ele fica "fora" do box (top negativo).
+   - Em telas menores isso pode ficar fora da área visível, então aqui
+     nós reposicionamos o botão para o canto superior direito do box.
+   - Também deixamos o conteúdo com SCROLL VISÍVEL (barra de rolagem) para
+     o usuário perceber que existem mais informações no modal.
+   =========================================================== */
+@media (max-width: 768px) {
   .modal {
+    padding: 1rem; /* respiro nas bordas em telas menores */
     .box {
-      width: min(58rem, 92vw);
+      height: auto;
       max-height: 90vh;
-      overflow: hidden;
 
-      // Em telas pequenas, é comum empilhar as colunas do modal
-      display: flex;
-      flex-direction: column;
+      .close {
+        top: .75rem;
+        right: .75rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0rem .25rem .75rem rgba(0, 0, 0, 0.12);
+        z-index: 3;
+      }
 
       .right-container {
         overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
         -webkit-overflow-scrolling: touch;
+
+        /* Scrollbar visível e discreta (combina com o tema) */
+        &::-webkit-scrollbar {
+          width: .5rem;
+        }
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(61, 117, 194, 0.75);
+          border-radius: 999px;
+        }
       }
     }
   }
 }
-
-@media(max-width: 360px) {
-  // Ajustes finos para celulares bem pequenos (ex.: 320–360px)
-  .btn-load-more {
-    width: 100%;
-  }
-}
-
