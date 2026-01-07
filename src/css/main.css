@@ -929,8 +929,7 @@ ul {
 .modal .box .right-container .stats .all .item .bar-status .separator li:not(:first-child) {
   margin-left: 3.375rem;
 }
-/* Smartphones pequenos (ex.: 320px) */
-@media screen and (min-width: 320px) and (max-width: 359px) {
+@media screen and (min-width: 335px) and (max-width: 364px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1014,8 +1013,7 @@ ul {
     margin-left: 19%;
   }
 }
-/* Smartphones médios (ex.: 360px) */
-@media screen and (min-width: 360px) and (max-width: 389px) {
+@media screen and (min-width: 365px) and (max-width: 400px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1099,8 +1097,7 @@ ul {
     margin-left: 19%;
   }
 }
-/* Smartphones maiores (ex.: 390px/412px) */
-@media screen and (min-width: 390px) and (max-width: 479px) {
+@media screen and (min-width: 401px) and (max-width: 479px) {
   .modal {
     -webkit-box-align: end;
     -ms-flex-align: end;
@@ -1832,14 +1829,7 @@ footer .text p {
 .area-all .right-container .all .conteudo-erro {
   position: relative;
   top: -1.25rem;
-  /*
-    Para iniciante:
-    - Antes: width fixo (50rem) poderia estourar em telas menores.
-    - Agora: ocupa 100% do espaço disponível, mas sem passar de 50rem.
-  */
-  width: 100%;
-  max-width: 50rem;
-  margin: 0 auto;
+  width: 50rem;
 }
 .area-all .right-container .all .conteudo-erro span {
   display: -webkit-box;
@@ -1886,61 +1876,116 @@ footer .text p {
   opacity: 0.5;
   z-index: -1;
 }
-/* ==========================================================
-   RESPONSIVIDADE EXTRA (adicionado)
-   - Objetivo: melhorar a visualização em 1024/768/390/360/320px.
-   - Observação: estes estilos são "overrides" (sobrescrevem regras anteriores).
-   ========================================================== */
 
-/* 1024px: geralmente tablet paisagem / desktop pequeno */
+/* === Responsividade extra (auto-ajuste) === */
+/*
+  Objetivo:
+  - Fazer o layout "se virar sozinho" em telas diferentes (celular, tablet, desktop),
+    sem você ter que criar um HTML diferente para cada tamanho.
+  - Para isso usamos: grid com auto-fit + minmax, medidas fluidas (clamp) e media queries.
+
+  Dica para iniciante:
+  - Regras colocadas no FINAL do arquivo têm prioridade (sobrescrevem regras antigas),
+    então é um bom lugar para ajustes de responsividade sem quebrar o resto.
+*/
+
+/* 1) Evita rolagem horizontal causada por elementos muito largos */
+html, body {
+  overflow-x: hidden;
+}
+
+/* 2) Garante que imagens nunca "estourem" o container */
+img, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 3) Container com padding mais "inteligente" (fluido) */
+.container {
+  padding-left: clamp(0.75rem, 3vw, 0.9375rem);
+  padding-right: clamp(0.75rem, 3vw, 0.9375rem);
+}
+
+/* 4) HERO: evita altura fixa gigante em telas baixas (celular) */
+.s-area-slide-hero {
+  /* fallback */
+  height: min(62.125rem, 100vh);
+}
+@supports (height: 100svh) {
+  .s-area-slide-hero {
+    /* svh = "small viewport height" (melhor em mobile) */
+    height: min(62.125rem, 100svh);
+  }
+}
+
+/* 5) Busca: em telas pequenas, o input deve ocupar 100% e não forçar zoom (iOS) */
+.search {
+  max-width: 100%;
+}
+.search input[type=text] {
+  min-width: 0; /* evita overflow dentro de flex */
+}
+
+/* 6) Lista de Pokémons: auto-ajuste de colunas
+   - Em vez de 3 colunas fixas, usamos auto-fit:
+     ele cria o máximo de colunas que couberem, com tamanho mínimo.
+*/
+.s-all-info-pokemons .area-all .right-container .all {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+/* 7) Quebras finas para telas comuns */
 @media (max-width: 1024px) {
   .s-all-info-pokemons .area-all .right-container .all {
-    grid-template-columns: 1fr 1fr;
-  }
-  .card-pokemon {
-    max-width: none;
+    grid-gap: 1.25rem;
   }
 }
 
-/* 768px: tablet em pé */
 @media (max-width: 768px) {
+  /* Em tablet/celular grande: cards um pouco menores */
   .s-all-info-pokemons .area-all .right-container .all {
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
   }
 }
 
-/* 560px e abaixo: 1 coluna e aproveita melhor o espaço (a .container já tem padding) */
 @media (max-width: 560px) {
+  /* Em celular: 1 coluna e input com fonte 16px (evita zoom no iPhone) */
   .s-all-info-pokemons .area-all .right-container .all {
-    max-width: 100%;
-    margin: 0;
+    grid-template-columns: 1fr;
   }
-}
-
-/* Ajuste de fonte no input da busca para evitar zoom automático em alguns celulares */
-@media (max-width: 480px) {
+  .search {
+    border-radius: 1.25rem;
+    height: auto;
+    padding: 0.75rem 1rem;
+  }
   .search input[type=text] {
+    width: 100%;
     font-size: 16px;
   }
+  .search button {
+    flex: 0 0 auto;
+  }
+
+  /* Modal: usa a tela toda sem "estourar" */
+  .modal .box {
+    width: min(58rem, 92vw);
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  .modal .box .right-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
-/* Ajustes finos de título para telas pequenas */
-@media (max-width: 390px) {
-  .s-all-info-pokemons .top h2 {
-    font-size: 1.75rem;
-    line-height: 2.25rem;
-  }
-}
+/* 8) Micro-ajustes para telas MUITO pequenas (320px/360px) */
 @media (max-width: 360px) {
-  .s-all-info-pokemons .top h2 {
-    font-size: 1.625rem;
-    line-height: 2.125rem;
+  .s-all-info-pokemons {
+    padding-top: 6rem;
+  }
+  .btn-load-more {
+    width: 100%;
+    max-width: 100%;
   }
 }
-@media (max-width: 320px) {
-  .s-all-info-pokemons .top h2 {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
-}
+
