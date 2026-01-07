@@ -1906,13 +1906,34 @@ img {
   min-width: 0;
 }
 
+/* iOS (Safari) dá zoom automaticamente quando o input tem font-size < 16px.
+   Isso pode "pular" a tela durante a digitação. Em telas menores, forçamos 16px. */
+@media (max-width: 768px) {
+  .search input[type=text] {
+    font-size: 16px;
+  }
+}
+
 /* Tablets / telas médias:
    - O topo (título + busca) pode quebrar linha e ficar mais confortável.
    - A grade de pokémons passa de 3 colunas para 2 colunas. */
 @media (max-width: 1024px) {
-  /* Responsividade (iniciante):
-     - O usuário pediu para manter o TAMANHO/POSICIONAMENTO do banner e do campo de busca como no layout original.
-     - Então, neste breakpoint (tablets/telas médias), ajustamos APENAS a grade de cards para 2 colunas. */
+  .s-all-info-pokemons .top {
+    height: auto;              /* Remove a altura fixa para permitir "quebra" natural */
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .s-all-info-pokemons .top h2 {
+    max-width: 100%;
+  }
+
+  .s-all-info-pokemons .top .search {
+    width: 100%;
+    max-width: 32rem;          /* Busca larga o suficiente em tablets */
+    margin-top: 1rem;
+  }
+
   .s-all-info-pokemons .area-all .right-container .all {
     grid-template-columns: 1fr 1fr;
     grid-gap: 1.25rem;
@@ -1929,25 +1950,86 @@ img {
    - "max-height: 90vh" usa a altura visível do viewport (vh = viewport height).
 */
 @media (max-width: 768px) {
+  /* Para iniciantes:
+     - Em mobile/tablet, o modal precisa caber na tela sem "esconder" partes.
+     - Alguns navegadores mobile tratam 100vh de forma diferente (barra de endereço),
+       por isso usamos também svh/dvh quando disponível.
+     - "safe-area-inset-*" evita que o conteúdo fique atrás do notch (iPhone) ou
+       de barras do sistema. */
+
   .modal {
-    align-items: flex-end; /* modal "encosta" embaixo para ficar mais natural no mobile */
+    align-items: flex-end; /* modal encosta embaixo (estilo bottom sheet) */
+
+    /* Padding com "safe area" (quando o navegador suporta) */
+    padding: calc(1rem + env(safe-area-inset-top))
+             calc(1rem + env(safe-area-inset-right))
+             calc(1rem + env(safe-area-inset-bottom))
+             calc(1rem + env(safe-area-inset-left));
   }
 
   .modal .box {
     width: 100%;
     max-width: none;
-    height: auto;          /* altura passa a ser automática */
-    max-height: 90vh;      /* mas limitada ao tamanho da tela */
-    border-radius: 1rem 1rem 0 0;
-    overflow: hidden;      /* evita barras aparecendo fora do lugar */
+    height: auto;
+
+    /* Altura máxima baseada no viewport (com fallbacks para mobile) */
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100svh - 2rem);
+    max-height: calc(100dvh - 2rem);
+
+    /* Cantos arredondados também embaixo (igual em cima) */
+    border-radius: 1rem;
+
+    overflow: hidden; /* mantém o box bem "recortado" com cantos arredondados */
+
+    /* Algumas regras antigas (por faixa de largura) usam "top" negativo.
+       Aqui neutralizamos para não esconder parte do modal. */
+    top: 0;
   }
 
-  /* Permite rolar apenas o conteúdo da direita (stats/infos) se ficar grande */
+  /* Botão "X" no canto superior direito (reaproveita o mesmo botão do HTML) */
+  .modal .box .close {
+    top: 0.75rem;
+    right: 0.75rem;
+
+    /* Mantém o estilo do botão original */
+    background-color: #FFFFFF;
+    border-radius: 0.5rem;
+
+    box-shadow: 0rem 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+    z-index: 5;
+  }
+
+  /* Área que costuma "passar" da altura em mobile: deixamos rolável e com scrollbar visível */
   .modal .right-container {
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+
+    /* Evita o layout "pular" quando a scrollbar aparece */
+    scrollbar-gutter: stable;
+
+    /* Firefox (scrollbar discreta) */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(61, 117, 194, 0.75) transparent;
+
+    /* Importante em alguns browsers para o scroll funcionar dentro de flex */
+    min-height: 0;
+  }
+
+  /* Scrollbar discreta e consistente (Chrome/Edge/Safari) */
+  .modal .right-container::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .modal .right-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .modal .right-container::-webkit-scrollbar-thumb {
+    background-color: rgba(61, 117, 194, 0.75);
+    border-radius: 999px;
   }
 }
+
 
 /* Reforço para celulares menores:
    - Mesmo tendo regra em 560px no CSS original, nós adicionamos esta aqui no final
