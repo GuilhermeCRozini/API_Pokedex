@@ -2,7 +2,12 @@
   position: relative;
   width: 100%;
 //Valor correspondente à soma da altura da área onde fica o background azul ou vermelho atrás da pokebola (708px) com a altura da área onde fica o Select your Pokémon (286px)
-  height: 62.125rem;
+  // Altura original (fixa) era muito grande em celulares.
+// Usamos min() + vh/svh para a seção se ajustar ao tamanho da tela.
+height: min(62.125rem, 100vh);
+@supports (height: 100svh) {
+  height: min(62.125rem, 100svh);
+}
   .slide-hero {
     width: 100%;
     height: 100%;
@@ -205,7 +210,6 @@
       }
     }
   }
-
 }
 
 .s-all-info-pokemons {
@@ -344,7 +348,10 @@
         display: grid;
 //Definindo quanta colunas terá, utilizando a unidade fr que é do grid, que vai ocupar 3 espaços igualmente para a área que está ocupando
 //1fr 1fr 1fr => Vai ocupar 3 colunas
-        grid-template-columns: 1fr 1fr 1fr;
+        // Auto-ajuste de colunas:
+// repeat(auto-fit, minmax(...)) cria "quantas colunas couberem",
+// respeitando um tamanho mínimo de card.
+grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 //Espaçamento entre os cards
         grid-gap: 2rem;
         margin-bottom: 4.25rem;
@@ -360,6 +367,17 @@
       .btn-load-more {
         display: table;
         margin: 0 auto;
+      }
+    }
+  }
+
+// Ajuste extra para tablets (paisagem) e telas médias
+  @media(max-width: 1024px) {
+    .area-all {
+      .right-container {
+        .all {
+          grid-gap: 1.25rem;
+        }
       }
     }
   }
@@ -390,23 +408,6 @@
     }
   }
 
-  // =============================
-  // RESPONSIVIDADE EXTRA (tablet/phones modernos)
-  // Pedidos do Guilherme: ficar confortável em ~1024px (tablet/desktop pequeno)
-  // =============================
-  @media (max-width: 1024px) {
-    .area-all {
-      .right-container {
-        // Para iniciante:
-        // - Em 1024px, 3 colunas deixam os cards muito apertados.
-        // - 2 colunas dão um layout mais respirável.
-        .all {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
-    }
-  }
-
 //Tablet
   @media(max-width: 768px) {
     margin-top: -16.125rem;
@@ -419,12 +420,6 @@
       }
       .right-container {
         padding-left: 0px;
-
-        // Mantém 2 colunas no tablet em pé (768px)
-        .all {
-          grid-template-columns: 1fr 1fr;
-          grid-gap: 1rem;
-        }
       }
     }   
   }
@@ -455,13 +450,8 @@
         .all {
           grid-template-columns: 1fr;
           grid-gap: 1rem;
-
-          // Para iniciante:
-          // - Antes existia max-width: 86% + margin auto.
-          // - Isso podia deixar a área de cards "estreita demais" em telas pequenas.
-          // - A .container já tem padding; então deixamos 100% para aproveitar melhor o espaço.
-          max-width: 100%;
-          margin: 0;
+          max-width: 86%;
+          margin: 0 auto;
           margin-bottom: 3rem;
           .conteudo-erro {
             width: 100%;
@@ -480,34 +470,6 @@
       }
     }
   }
-
-  // Ajustes extras para smartphones pequenos
-  @media (max-width: 390px) {
-    .top {
-      h2 {
-        font-size: 1.75rem;
-        line-height: 2.25rem;
-      }
-    }
-  }
-
-  @media (max-width: 360px) {
-    .top {
-      h2 {
-        font-size: 1.625rem;
-        line-height: 2.125rem;
-      }
-    }
-  }
-
-  @media (max-width: 320px) {
-    .top {
-      h2 {
-        font-size: 1.5rem;
-        line-height: 2rem;
-      }
-    }
-  }
 }
 
 //************************** MENSAGEM DE ERRO **************************
@@ -519,12 +481,7 @@
       .conteudo-erro {
         position: relative;
         top: -1.25rem;
-        // Para iniciante:
-        // - Antes: width: 50rem fixo (podia estourar em tablets/celulares e criar scroll horizontal)
-        // - Agora: ocupa 100% do espaço disponível, mas não passa de 50rem
-        width: 100%;
-        max-width: 50rem;
-        margin: 0 auto;
+        width: 50rem;
         span {
           @include centerTotalFlex;
           flex-direction: column;

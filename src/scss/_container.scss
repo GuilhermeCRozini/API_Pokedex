@@ -1,6 +1,14 @@
+// =========================================================
+// Container responsivo (iniciante)
+// - A ideia do .container é limitar o conteúdo a uma largura máxima,
+//   mas com espaçamento lateral confortável em qualquer tela.
+// - clamp(min, preferido, max) cria um valor "fluido":
+//   em telas pequenas usa o mínimo, em telas grandes chega no máximo.
+// =========================================================
 .container {
   width: 100%;
   max-width: 76rem;
-  margin: 0 auto; //Centralizando GRID
-  padding: 0rem .9375rem;
+  margin: 0 auto; // Centralizando o container
+  padding-left: clamp(0.75rem, 3vw, 0.9375rem);
+  padding-right: clamp(0.75rem, 3vw, 0.9375rem);
 }
