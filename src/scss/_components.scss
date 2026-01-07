@@ -882,6 +882,7 @@
 
 
 /* ===========================================================
+   /* ===========================================================
    AJUSTES RESPONSIVOS DO MODAL (Mobile/Tablet)
    Para iniciantes:
    - O HTML do modal já tem um botão com classe ".close" e o ícone (close.svg).
@@ -890,20 +891,47 @@
      nós reposicionamos o botão para o canto superior direito do box.
    - Também deixamos o conteúdo com SCROLL VISÍVEL (barra de rolagem) para
      o usuário perceber que existem mais informações no modal.
+
+   Extra (compatibilidade de navegador):
+   - "vh" pode variar em navegadores mobile por causa da barra de endereço.
+     Por isso usamos também "svh" e "dvh" (quando suportados).
+   - "safe-area-inset-*" evita conteúdo escondido em iPhones com notch.
    =========================================================== */
 @media (max-width: 768px) {
   .modal {
-    padding: 1rem; /* respiro nas bordas em telas menores */
+    align-items: flex-end; // deixa o modal mais natural no mobile (encosta embaixo)
+
+    // Padding com "safe area" (quando o navegador suporta)
+    padding: calc(1rem + env(safe-area-inset-top))
+             calc(1rem + env(safe-area-inset-right))
+             calc(1rem + env(safe-area-inset-bottom))
+             calc(1rem + env(safe-area-inset-left));
+
     .box {
       height: auto;
-      max-height: 90vh;
+
+      // Altura máxima baseada no viewport (com fallbacks para mobile)
+      max-height: calc(100vh - 2rem);
+      max-height: calc(100svh - 2rem);
+      max-height: calc(100dvh - 2rem);
+
+      // Cantos arredondados também embaixo (igual em cima)
+      border-radius: 1rem;
+
+      // Algumas regras antigas (por faixa de largura) usam "top" negativo.
+      // Aqui neutralizamos para não esconder parte do modal.
+      top: 0;
 
       .close {
         top: .75rem;
         right: .75rem;
-        background-color: rgba(255, 255, 255, 0.95);
+
+        // Mantém o estilo do botão original (desktop)
+        background-color: #FFFFFF;
+        border-radius: .5rem;
+
         box-shadow: 0rem .25rem .75rem rgba(0, 0, 0, 0.12);
-        z-index: 3;
+        z-index: 5;
       }
 
       .right-container {
@@ -912,7 +940,14 @@
         scrollbar-gutter: stable;
         -webkit-overflow-scrolling: touch;
 
-        /* Scrollbar visível e discreta (combina com o tema) */
+        // Firefox (scrollbar discreta)
+        scrollbar-width: thin;
+        scrollbar-color: rgba(61, 117, 194, 0.75) transparent;
+
+        // Ajuda o scroll funcionar dentro de flex em alguns browsers
+        min-height: 0;
+
+        /* Scrollbar visível e discreta (Chrome/Edge/Safari) */
         &::-webkit-scrollbar {
           width: .5rem;
         }
