@@ -1877,115 +1877,161 @@ footer .text p {
   z-index: -1;
 }
 
-/* === Responsividade extra (auto-ajuste) === */
-/*
-  Objetivo:
-  - Fazer o layout "se virar sozinho" em telas diferentes (celular, tablet, desktop),
-    sem você ter que criar um HTML diferente para cada tamanho.
-  - Para isso usamos: grid com auto-fit + minmax, medidas fluidas (clamp) e media queries.
+/* ======================================================================
+   RESPONSIVIDADE EXTRA (adicionado)
+   ----------------------------------------------------------------------
+   Para iniciante:
+   - O site já tinha alguns @media, mas alguns layouts ainda ficavam "apertados"
+     em tablets e celulares maiores.
+   - Aqui adicionamos ajustes seguros (override) para:
+       1) Melhorar a leitura/uso em telas pequenas e médias
+       2) Evitar rolagem horizontal (conteúdo "vazando" para os lados)
+       3) Deixar grade (cards) mais confortável em tablets
+       4) Melhorar o modal em telas menores (usar altura da tela e permitir rolagem interna)
+   ====================================================================== */
 
-  Dica para iniciante:
-  - Regras colocadas no FINAL do arquivo têm prioridade (sobrescrevem regras antigas),
-    então é um bom lugar para ajustes de responsividade sem quebrar o resto.
-*/
-
-/* 1) Evita rolagem horizontal causada por elementos muito largos */
+/* Evita que algum elemento cause rolagem horizontal (muito comum em mobile) */
 html, body {
   overflow-x: hidden;
 }
 
-/* 2) Garante que imagens nunca "estourem" o container */
-img, svg {
+/* Imagens nunca devem estourar o container em telas menores */
+img {
   max-width: 100%;
   height: auto;
 }
 
-/* 3) Container com padding mais "inteligente" (fluido) */
-.container {
-  padding-left: clamp(0.75rem, 3vw, 0.9375rem);
-  padding-right: clamp(0.75rem, 3vw, 0.9375rem);
-}
-
-/* 4) HERO: evita altura fixa gigante em telas baixas (celular) */
-.s-area-slide-hero {
-  /* fallback */
-  height: min(62.125rem, 100vh);
-}
-@supports (height: 100svh) {
-  .s-area-slide-hero {
-    /* svh = "small viewport height" (melhor em mobile) */
-    height: min(62.125rem, 100svh);
-  }
-}
-
-/* 5) Busca: em telas pequenas, o input deve ocupar 100% e não forçar zoom (iOS) */
-.search {
-  max-width: 100%;
-}
+/* A área de busca é um flex; em telas pequenas, garantir que o input possa encolher sem quebrar layout */
 .search input[type=text] {
-  min-width: 0; /* evita overflow dentro de flex */
+  min-width: 0;
 }
 
-/* 6) Lista de Pokémons: auto-ajuste de colunas
-   - Em vez de 3 colunas fixas, usamos auto-fit:
-     ele cria o máximo de colunas que couberem, com tamanho mínimo.
-*/
-.s-all-info-pokemons .area-all .right-container .all {
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-}
-
-/* 7) Quebras finas para telas comuns */
-@media (max-width: 1024px) {
-  .s-all-info-pokemons .area-all .right-container .all {
-    grid-gap: 1.25rem;
-  }
-}
-
+/* iOS (Safari) dá zoom automaticamente quando o input tem font-size < 16px.
+   Isso pode "pular" a tela durante a digitação. Em telas menores, forçamos 16px. */
 @media (max-width: 768px) {
-  /* Em tablet/celular grande: cards um pouco menores */
-  .s-all-info-pokemons .area-all .right-container .all {
-    grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
-  }
-}
-
-@media (max-width: 560px) {
-  /* Em celular: 1 coluna e input com fonte 16px (evita zoom no iPhone) */
-  .s-all-info-pokemons .area-all .right-container .all {
-    grid-template-columns: 1fr;
-  }
-  .search {
-    border-radius: 1.25rem;
-    height: auto;
-    padding: 0.75rem 1rem;
-  }
   .search input[type=text] {
-    width: 100%;
     font-size: 16px;
   }
-  .search button {
-    flex: 0 0 auto;
-  }
-
-  /* Modal: usa a tela toda sem "estourar" */
-  .modal .box {
-    width: min(58rem, 92vw);
-    max-height: 90vh;
-    overflow: hidden;
-  }
-  .modal .box .right-container {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
 }
 
-/* 8) Micro-ajustes para telas MUITO pequenas (320px/360px) */
-@media (max-width: 360px) {
-  .s-all-info-pokemons {
-    padding-top: 6rem;
+/* Tablets / telas médias:
+   - O topo (título + busca) pode quebrar linha e ficar mais confortável.
+   - A grade de pokémons passa de 3 colunas para 2 colunas. */
+@media (max-width: 1024px) {
+  .s-all-info-pokemons .top {
+    height: auto;              /* Remove a altura fixa para permitir "quebra" natural */
+    flex-wrap: wrap;
+    gap: 1rem;
   }
-  .btn-load-more {
+
+  .s-all-info-pokemons .top h2 {
+    max-width: 100%;
+  }
+
+  .s-all-info-pokemons .top .search {
     width: 100%;
+    max-width: 32rem;          /* Busca larga o suficiente em tablets */
+    margin-top: 1rem;
+  }
+
+  .s-all-info-pokemons .area-all .right-container .all {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1.25rem;
+  }
+
+  /* Card ocupa bem o espaço da coluna */
+  .card-pokemon {
     max-width: 100%;
   }
 }
 
+/* Celulares:
+   - O modal precisa caber na tela e permitir rolagem de conteúdo.
+   - "max-height: 90vh" usa a altura visível do viewport (vh = viewport height).
+*/
+@media (max-width: 768px) {
+  .modal {
+    align-items: flex-end; /* modal "encosta" embaixo para ficar mais natural no mobile */
+  }
+
+  .modal .box {
+    width: 100%;
+    max-width: none;
+    height: auto;          /* altura passa a ser automática */
+    max-height: 90vh;      /* mas limitada ao tamanho da tela */
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;      /* evita barras aparecendo fora do lugar */
+  }
+
+  /* Permite rolar apenas o conteúdo da direita (stats/infos) se ficar grande */
+  .modal .right-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
+  }
+}
+
+/* Reforço para celulares menores:
+   - Mesmo tendo regra em 560px no CSS original, nós adicionamos esta aqui no final
+     para garantir que a regra de 1 coluna "vença" as regras de tablet (2 colunas). */
+@media (max-width: 560px) {
+  .s-all-info-pokemons .area-all .right-container .all {
+    grid-template-columns: 1fr;
+    grid-gap: 1rem;
+  }
+}
+
+
+/* ===========================================================
+   AJUSTES RESPONSIVOS DO MODAL (Mobile/Tablet)
+   Objetivos:
+   1) Botão "X" (já existente no HTML) no canto superior direito do modal
+      em telas menores, para não ficar "fora" do box.
+   2) Conteúdo com rolagem (scroll) VISÍVEL dentro do modal, para o usuário
+      perceber que há mais informações.
+   Observação para iniciantes:
+   - startsWith()/busca ao vivo está no JS; aqui é só layout (CSS).
+   =========================================================== */
+@media (max-width: 768px) {
+  /* Dá um respiro nas bordas em telas menores */
+  .modal {
+    padding: 1rem;
+  }
+
+  /* Em telas pequenas o modal precisa "caber" na altura da tela */
+  .modal .box {
+    height: auto;
+    max-height: 90vh;
+  }
+
+  /* Botão fechar "X" dentro do box (canto superior direito) */
+  .modal .box .close {
+    top: 0.75rem;
+    right: 0.75rem;
+    /* Fundo levemente translúcido para combinar com o tema sem poluir */
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0rem 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
+    z-index: 3;
+  }
+
+  /* A coluna de informações é a que costuma estourar a altura em mobile.
+     Então deixamos ela rolável com scrollbar visível. */
+  .modal .box .right-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Mantém espaço para a scrollbar sem "pular" layout quando ela aparece */
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Scrollbar visível e discreta (combina com o azul do tema) */
+  .modal .box .right-container::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .modal .box .right-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .modal .box .right-container::-webkit-scrollbar-thumb {
+    background-color: rgba(61, 117, 194, 0.75);
+    border-radius: 999px;
+  }
+}
