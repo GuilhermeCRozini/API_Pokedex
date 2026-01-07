@@ -35,6 +35,8 @@
   const PAGE_SIZE_ALL = 9;
   const PAGE_SIZE_SEARCH = 30;
 
+  // state (estado) guarda o 'modo atual' da tela e dados da busca.
+  // Isso evita variáveis soltas e facilita entender o fluxo.
   const state = {
     mode: 'all', // all | type | search | exact
     allOffset: 0,
@@ -42,7 +44,7 @@
     // Índice de pokémons (nome/url/id) para autocomplete + busca instantânea
     indexLoaded: false,
     pokemonIndex: /** @type {{name:string,url:string,id:number}[]} */ ([]),
-    // Busca por substring
+    // Busca por prefixo ("começa com")
     search: {
       query: '',
       matches: /** @type {{name:string,url:string,id:number}[]} */ ([]),
@@ -102,7 +104,22 @@
     return out;
   }
 
-  function clearPokemonList() {
+  
+  // -----------------------------
+  // Busca por prefixo (começa com)
+  // -----------------------------
+  // Regra principal pedida:
+  // - Se você digita "c", deve aparecer só quem COMEÇA com "c" (ex.: caterpie, charmander...)
+  // - Se você digita "ch", deve aparecer só quem COMEÇA com "ch" (ex.: charmander, charmeleon...)
+  // - Se você digita "cha", deve aparecer só quem COMEÇA com "cha"...
+  //
+  // Por isso usamos startsWith() em vez de includes().
+  // startsWith("cha") garante que o texto comece com "cha".
+  function matchesNamePrefix(pokemonName, query) {
+    return pokemonName.startsWith(query);
+  }
+
+function clearPokemonList() {
     areaPokemons.innerHTML = '';
   }
 
@@ -446,21 +463,29 @@
     const q = (query || '').trim().toLowerCase();
     if (!q || !state.indexLoaded) return;
 
-    // Preferimos prefixo para "completar"; se não houver, usamos contains.
-    let candidates = state.pokemonIndex.filter((p) => p.name.startsWith(q));
-    if (candidates.length < 12) {
-      const extra = state.pokemonIndex.filter((p) => !p.name.startsWith(q) && p.name.includes(q));
-      candidates = candidates.concat(extra);
-    }
+    // Sugestões (autocomplete):
+    // Aqui a regra é "começa com" (prefixo). Assim, ao digitar "pi" você vê "pikachu", "pidgey"...,
+    // e não nomes que só CONTÊM "pi" no meio/final.
+    const candidates = state.pokemonIndex
+      .filter((p) => matchesNamePrefix(p.name, q))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
     candidates
       .slice(0, 12)
       .forEach((p) => {
         const opt = document.createElement('option');
-        opt.value = p.name; // mantém lowercase para compatibilidade com a API
+        // A PokeAPI usa nomes em lowercase (ex.: 'pikachu').
+        // Por isso colocamos o valor da sugestão exatamente assim.
+        opt.value = p.name;
         datalistSuggestions.appendChild(opt);
       });
   }
 
+  // Carrega (uma única vez) um índice leve com TODOS os Pokémons: { id, name, url }.
+  // Isso é bem mais rápido do que buscar detalhes (sprites, stats...) para todos de uma vez.
+  // Usamos esse índice para:
+  // - filtrar rapidamente enquanto você digita
+  // - montar as sugestões de autocomplete
   async function ensurePokemonIndex() {
     try {
       const data = await fetchJson('https://pokeapi.co/api/v2/pokemon?limit=200000&offset=0');
@@ -476,6 +501,9 @@
     }
   }
 
+  // Renderiza a página no modo "search" (filtrando a lista conforme o texto digitado)
+  // - reset=true: limpa a lista e começa do zero
+  // - reset=false: continua (Load more)
   async function renderSearchPage({ query, reset }) {
     const q = (query || '').trim().toLowerCase();
     if (!q) return;
@@ -495,14 +523,28 @@
       scrollToPokemonSection();
     }
 
-    // Match por nome (contains) ou por id (prefixo)
+    // Match por nome (prefixo) ou por id (prefixo)
     const isNumeric = /^[0-9]+$/.test(q);
+    // Filtra por ID (prefixo) ou por NOME (prefixo).
+    // Ex.: digitando "pi" deve trazer "pidgey", "pikachu"... e NÃO "vulpix" (que contém "pi" no final).
+
+    // Aqui definimos quais pokémons entram no resultado:
+    // - Se o usuário digitou números, filtramos por ID que COMEÇA com esse número (ex.: "1" -> 1, 10, 11...)
+    // - Se o usuário digitou letras, filtramos por NOME que COMEÇA com essas letras (ex.: "cha" -> charmander, charmeleon...)
+    // Isso implementa o comportamento clássico de "autocomplete".
     const matches = isNumeric
       ? state.pokemonIndex.filter((p) => String(p.id).startsWith(q))
-      : state.pokemonIndex.filter((p) => p.name.includes(q));
+      : state.pokemonIndex.filter((p) => matchesNamePrefix(p.name, q));
 
-    state.search.matches = matches.sort((a, b) => a.id - b.id);
-    countPokemons.textContent = String(state.search.matches.length);
+    // Ordenação dos resultados:
+    // - Se for busca numérica, ordena por ID (1, 2, 3...)
+    // - Se for busca por nome, ordena por nome (A → Z), que combina melhor com o que você está digitando
+    const sortMatches = isNumeric
+      ? (a, b) => a.id - b.id
+      : (a, b) => a.name.localeCompare(b.name);
+
+    state.search.matches = matches.sort(sortMatches);
+countPokemons.textContent = String(state.search.matches.length);
 
     if (state.search.matches.length === 0) {
       btnLoadMore.style.display = 'none';
@@ -516,31 +558,40 @@
     // Mostra botão se ainda há mais
     btnLoadMore.style.display = state.search.offset < state.search.matches.length ? 'block' : 'none';
 
-    // Usa cache quando possível
+    // Usa cache quando possível.
+    // Importante: manter a ORDEM do "slice" (que já está ordenado por ID ou por NOME).
+    // Se a gente ordenar os modelos por conta, o resultado na tela pode ficar fora da ordem do que você digitou.
     const toFetch = [];
-    const cachedModels = [];
+    const modelsById = new Map(); // id -> modelo pronto para renderizar
+
     slice.forEach((p) => {
       const cached = pokemonCache.get(p.id);
-      if (cached) cachedModels.push(cached);
-      else toFetch.push(p.url);
+      if (cached) {
+        modelsById.set(p.id, cached);
+      } else {
+        toFetch.push(p.url);
+      }
     });
-
-    cachedModels
-      .sort((a, b) => a.id - b.id)
-      .forEach((m) => createCardPokemon(m));
 
     if (toFetch.length) {
       const details = await fetchInBatches(toFetch, 25);
-      const models = details
+      details
         .map(toCardModel)
-        .filter((m) => m.image)
-        .sort((a, b) => a.id - b.id);
-      models.forEach((m) => {
-        upsertCache(m);
-        createCardPokemon(m);
-      });
+        .filter((m) => m && m.image)
+        .forEach((m) => {
+          upsertCache(m);
+          modelsById.set(m.id, m);
+        });
     }
-  }
+
+    // Renderiza seguindo exatamente a ordem do slice:
+    // - Busca por ID: 1,2,3...
+    // - Busca por nome: A→Z (prefixo)
+    slice.forEach((p) => {
+      const model = modelsById.get(p.id);
+      if (model && model.image) createCardPokemon(model);
+    });
+}
 
   async function renderExactPokemon(value) {
     const q = String(value || '').trim().toLowerCase();
@@ -569,6 +620,10 @@
   }
 
   // Debounce da busca para evitar travar enquanto digita
+  // - O evento "input" dispara a cada tecla.
+  // - Com debounce, esperamos alguns ms antes de filtrar/renderizar.
+  // - Se o usuário digitar de novo nesse tempo, reiniciamos o timer.
+  // Também atualizamos o autocomplete (datalist) ao mesmo tempo.
   let searchTimer = null;
   function scheduleSearch() {
     const q = inputSearch.value.trim().toLowerCase();
@@ -590,7 +645,7 @@
         return;
       }
 
-      // Busca por substring (live) ao digitar
+      // Busca por prefixo ("começa com") (live) ao digitar
       // Remove o "active" dos tipos para evitar confusão visual durante a busca
       document.querySelectorAll('.type-filter').forEach((btn) => btn.classList.remove('active'));
       btnLoadMore.style.display = 'block';
@@ -600,7 +655,10 @@
 
   inputSearch.addEventListener('input', scheduleSearch);
 
-  // Clique/Enter: tenta "exato" se for nome completo ou número; senão mantém o live
+  // Clique no botão / Enter:
+// - Se o usuário digitou um ID (número) OU um nome completo exatamente igual ao da API,
+//   a gente busca aquele Pokémon específico (modo 'exact').
+// - Caso contrário, mantém o comportamento de filtrar a lista (live search).
   async function handleSearchCommit() {
     const q = inputSearch.value.trim().toLowerCase();
     if (!q) return;
