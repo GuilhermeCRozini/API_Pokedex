@@ -68,6 +68,15 @@
     }
     @include centerTotalFlex;
   }
+
+  // Para iniciante (mobile):
+  // Em alguns celulares (principalmente iPhone), inputs com fonte < 16px podem dar "zoom" automático.
+  // Então garantimos pelo menos 16px em telas pequenas.
+  @media (max-width: 480px) {
+    input[type=text] {
+      font-size: 1rem; // 16px
+    }
+  }
 }
 
 .type-filter {
@@ -112,6 +121,13 @@
     box-shadow: 0rem .75rem 2.5rem -0.3125rem rgba(90, 96, 100, 0.3);
   }
   @include pokeBackgroundColorTypeNames;
+
+  // Responsivo:
+  // Em grids (2 colunas, 1 coluna, etc.), limitar o card a 17.5rem pode criar "buracos" e desalinhamento.
+  // Então liberamos o max-width em telas menores.
+  @media (max-width: 1024px) {
+    max-width: none;
+  }
   .image {
     position: relative;
     width: 12.5rem;
@@ -157,6 +173,13 @@
     }
   }
   @media(max-width: 1200px) {
+    max-width: 100%;
+  }
+}
+
+// Em telas menores (tablets e smartphones), deixar o card 100% flexível evita "sobras" e quebra estranha no Grid.
+@media (max-width: 1024px) {
+  .card-pokemon {
     max-width: 100%;
   }
 }
@@ -430,7 +453,8 @@
         }
       }
     }
-    @media screen and (min-width: 335px) and (max-width: 364px) {
+    // Smartphones pequenos (ex.: 320x568, 320x640)
+    @media screen and (min-width: 320px) and (max-width: 359px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -516,7 +540,8 @@
         }
       }
     }
-    @media screen and (min-width: 365px) and (max-width: 400px) {
+    // Smartphones médios (ex.: 360x800, 375x812)
+    @media screen and (min-width: 360px) and (max-width: 389px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
@@ -602,7 +627,8 @@
         }
       }
     }
-    @media screen and (min-width: 401px) and (max-width: 479px) {
+    // Smartphones maiores (ex.: 390x844, 412x915)
+    @media screen and (min-width: 390px) and (max-width: 479px) {
       align-items: flex-end;
       .box {
         flex-direction: column;
