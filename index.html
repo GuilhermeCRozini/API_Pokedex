@@ -5,19 +5,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+      Responsividade (iniciante):
+      - width=device-width faz o layout usar a largura real do dispositivo.
+      - initial-scale=1.0 evita zoom inicial.
+      - viewport-fit=cover melhora o ajuste em telas com notch (iPhone), usando a área segura.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
     <link rel="stylesheet" href="src/css/plugins.css">
-    <link rel="stylesheet" href="src/css/main.css?v=20260106_1">
-    <!-- CACHE BUST (para iniciantes): o ?v=... força o navegador a baixar a versão nova do CSS,
-         evitando usar um arquivo antigo salvo no cache. Sempre que você atualizar o CSS/JS,
-         você pode trocar esse número para garantir que todo mundo veja a versão nova. -->
-    <!-- Removido: CSS da biblioteca autoComplete.js (não estava sendo usada). -->
-    <!-- Para sugestões usamos <datalist>, que é nativo do navegador e funciona bem em desktop e mobile. -->
-
+    <link rel="stylesheet" href="src/css/main.css">
+    <!-- Removido: CSS do autoComplete.js (biblioteca externa).
+         Motivo: estamos usando <datalist> nativo, então esse CSS era "código morto" e só pesava a página. -->
     <link rel="icon" type="image/svg" href="src/img/snorlax_icon.svg">
     <title>Pokédex</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -334,8 +338,7 @@
   </container>-->
 
   <script src="src/js/plugins.js"></script>
-  <script src="src/js/all.js?v=20260106_1"></script>
-  <!-- CACHE BUST (para iniciantes): mesmo truque do CSS. Troque o ?v=... quando atualizar o JS. -->
+  <script src="src/js/all.js"></script>
 </body>
 
 </html>
