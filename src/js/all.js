@@ -376,7 +376,9 @@ function scrollToPokemonSection() {
   // -----------------------------
   // Listagem (All)
   // -----------------------------
-  async function renderAllPage({ offset, append }) {
+  // Renderiza uma "página" do modo All.
+  // Para iniciante: usamos "offset" para paginar (carregar de 9 em 9 sem precisar baixar tudo de uma vez).
+  async function renderAllPage({ offset }) {
     const url = `https://pokeapi.co/api/v2/pokemon/?limit=${PAGE_SIZE_ALL}&offset=${offset}`;
     const data = await fetchJson(url);
 
@@ -405,12 +407,12 @@ function scrollToPokemonSection() {
     state.allOffset = 0;
     clearPokemonList();
     btnLoadMore.style.display = 'block';
-    await renderAllPage({ offset: 0, append: false });
+    await renderAllPage({ offset: 0 });
     state.allOffset += PAGE_SIZE_ALL;
   }
 
   async function loadMoreAll() {
-    await renderAllPage({ offset: state.allOffset, append: true });
+    await renderAllPage({ offset: state.allOffset });
     state.allOffset += PAGE_SIZE_ALL;
   }
 
@@ -792,17 +794,14 @@ countPokemons.textContent = String(state.search.matches.length);
     ensurePokemonIndex();
 
     // Botão "All" já existe no HTML (desktop e mobile)
+    // Para iniciante: adicionamos o listener UMA vez. Repetir isso não quebra,
+    // mas é trabalho desnecessário e pode causar confusão no futuro.
     document.querySelectorAll('.type-filter.all').forEach((btn) => {
       btn.addEventListener('click', filterByTypes);
     });
 
     // Tipos
     initTypes();
-
-    // Listener do botão "All" (já existe no HTML)
-    document.querySelectorAll('.type-filter.all').forEach((btn) => {
-      btn.addEventListener('click', filterByTypes);
-    });
 
     // Listagem inicial (All)
     document.querySelectorAll('.type-filter.all').forEach((btn) => btn.classList.add('active'));
