@@ -5,16 +5,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
     <link rel="stylesheet" href="src/css/plugins.css">
-    <link rel="stylesheet" href="src/css/main.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
+    <link rel="stylesheet" href="src/css/main.css?v=20260106_1">
+    <!-- CACHE BUST (para iniciantes): o ?v=... força o navegador a baixar a versão nova do CSS,
+         evitando usar um arquivo antigo salvo no cache. Sempre que você atualizar o CSS/JS,
+         você pode trocar esse número para garantir que todo mundo veja a versão nova. -->
+    <!-- Removido: CSS da biblioteca autoComplete.js (não estava sendo usada). -->
+    <!-- Para sugestões usamos <datalist>, que é nativo do navegador e funciona bem em desktop e mobile. -->
 
     <link rel="icon" type="image/svg" href="src/img/snorlax_icon.svg">
     <title>Pokédex</title>
@@ -332,7 +334,8 @@
   </container>-->
 
   <script src="src/js/plugins.js"></script>
-  <script src="src/js/all.js"></script>
+  <script src="src/js/all.js?v=20260106_1"></script>
+  <!-- CACHE BUST (para iniciantes): mesmo truque do CSS. Troque o ?v=... quando atualizar o JS. -->
 </body>
 
 </html>
