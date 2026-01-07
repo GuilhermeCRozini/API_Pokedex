@@ -106,8 +106,20 @@
       <div class="top">
         <h2>Select your Pokémon</h2>
         <div class="search">
-          <!-- Campo de busca: ligado a um <datalist> para autocomplete nativo do navegador -->
-          <input type="text" placeholder="Digite o nome ou o código!" id="js-input-search" list="js-pokemon-suggestions" autocomplete="off">
+                    <!-- Campo de busca: ligado a um <datalist> para autocomplete nativo do navegador -->
+          <!--
+            Para iniciante:
+            - id="js-input-search" permite o JS encontrar este input com document.getElementById.
+            - list="js-pokemon-suggestions" conecta o input ao <datalist> (autocomplete nativo).
+            - autocomplete="off" evita o autocomplete "antigo" do navegador brigar com nossas sugestões.
+          -->
+          <input
+            type="text"
+            id="js-input-search"
+            placeholder="Digite o nome (ex.: char) ou o ID (ex.: 25) do Pokémon"
+            list="js-pokemon-suggestions"
+            autocomplete="off"
+          >
           <!-- As opções (nomes) são preenchidas via JS conforme você digita.
                Importante: usamos "prefixo" (começa com). Então "ch" sugere apenas nomes que começam com "ch". -->
           <datalist id="js-pokemon-suggestions"></datalist>
