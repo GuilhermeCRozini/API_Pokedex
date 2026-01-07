@@ -143,12 +143,40 @@ function clearPokemonList() {
     spanErro.appendChild(imgErro);
   }
 
-  function scrollToPokemonSection() {
-    const section = document.querySelector('.s-all-info-pokemons');
-    if (!section) return;
-    const top = section.offsetTop;
-    window.scrollTo({ top: top + 288, behavior: 'smooth' });
+  /**
+ * Mantém o campo de busca visível sem "puxar" a página demais.
+ *
+ * Antes: rolava para section.offsetTop + 288 (podia descer muito e esconder o input).
+ * Agora: rola o mínimo necessário para o input continuar visível na tela.
+ *
+ * Dica para iniciante:
+ * - getBoundingClientRect() dá a posição do elemento na tela (viewport), não no documento todo.
+ * - Se o input já está visível, NÃO fazemos nada (evita a página "andar" ao digitar).
+ */
+function scrollToPokemonSection() {
+  if (!inputSearch) return;
+
+  const margin = 16; // "respiro" para o input não ficar colado na borda da tela
+  const rect = inputSearch.getBoundingClientRect();
+
+  // Caso 1: o topo do input ficou acima da área visível
+  if (rect.top < margin) {
+    window.scrollTo({
+      top: window.scrollY + rect.top - margin,
+      behavior: 'smooth',
+    });
+    return;
   }
+
+  // Caso 2: o fim do input passou do limite inferior visível
+  const bottomLimit = window.innerHeight - margin;
+  if (rect.bottom > bottomLimit) {
+    window.scrollTo({
+      top: window.scrollY + (rect.bottom - window.innerHeight) + margin,
+      behavior: 'smooth',
+    });
+  }
+}
 
   // -----------------------------
   // Swiper
@@ -464,11 +492,12 @@ function clearPokemonList() {
     if (!q || !state.indexLoaded) return;
 
     // Sugestões (autocomplete):
+    // Exibimos em ordem de ID (Pokédex) para manter consistência com a listagem.
     // Aqui a regra é "começa com" (prefixo). Assim, ao digitar "pi" você vê "pikachu", "pidgey"...,
     // e não nomes que só CONTÊM "pi" no meio/final.
     const candidates = state.pokemonIndex
       .filter((p) => matchesNamePrefix(p.name, q))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a.id - b.id);
 
     candidates
       .slice(0, 12)
@@ -504,7 +533,7 @@ function clearPokemonList() {
   // Renderiza a página no modo "search" (filtrando a lista conforme o texto digitado)
   // - reset=true: limpa a lista e começa do zero
   // - reset=false: continua (Load more)
-  async function renderSearchPage({ query, reset }) {
+  async function renderSearchPage({ query, reset, scroll = true }) {
     const q = (query || '').trim().toLowerCase();
     if (!q) return;
 
@@ -518,10 +547,14 @@ function clearPokemonList() {
     state.search.query = q;
 
     if (reset) {
-      state.search.offset = 0;
-      clearPokemonList();
-      scrollToPokemonSection();
-    }
+  state.search.offset = 0;
+  clearPokemonList();
+
+  // Para iniciante:
+  // - Em "live search" (enquanto digita), NÃO queremos rolar a página a cada tecla.
+  // - Por isso o caller (scheduleSearch) passa scroll=false.
+  if (scroll) scrollToPokemonSection();
+}
 
     // Match por nome (prefixo) ou por id (prefixo)
     const isNumeric = /^[0-9]+$/.test(q);
@@ -539,11 +572,11 @@ function clearPokemonList() {
     // Ordenação dos resultados:
     // - Se for busca numérica, ordena por ID (1, 2, 3...)
     // - Se for busca por nome, ordena por nome (A → Z), que combina melhor com o que você está digitando
-    const sortMatches = isNumeric
-      ? (a, b) => a.id - b.id
-      : (a, b) => a.name.localeCompare(b.name);
-
-    state.search.matches = matches.sort(sortMatches);
+    // Ordenação dos resultados (sempre por ID crescente)
+// Para iniciante:
+// - Mesmo filtrando por nome (prefixo), a exibição fica em "ordem de Pokédex".
+// - Isso é mais consistente com a página inicial.
+state.search.matches = matches.sort((a, b) => a.id - b.id);
 countPokemons.textContent = String(state.search.matches.length);
 
     if (state.search.matches.length === 0) {
@@ -646,10 +679,11 @@ countPokemons.textContent = String(state.search.matches.length);
       }
 
       // Busca por prefixo ("começa com") (live) ao digitar
+      // Importante: aqui NÃO fazemos scroll (scroll=false), para a tela não ficar "descendo" a cada tecla.
       // Remove o "active" dos tipos para evitar confusão visual durante a busca
       document.querySelectorAll('.type-filter').forEach((btn) => btn.classList.remove('active'));
       btnLoadMore.style.display = 'block';
-      await renderSearchPage({ query: qq, reset: true });
+      await renderSearchPage({ query: qq, reset: true, scroll: false });
     }, 180);
   }
 
