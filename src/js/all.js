@@ -119,6 +119,26 @@
     return pokemonName.startsWith(query);
   }
 
+  /**
+   * Retorna os nomes de types em ordem (type principal primeiro).
+   *
+   * Iniciante:
+   * A PokeAPI retorna um array em `pokemon.types` com um campo `slot`.
+   * - slot 1 = type principal
+   * - slot 2 = type secundário
+   *
+   * A gente ordena por `slot` para garantir que o ícone da esquerda
+   * sempre seja o principal, e o da direita o secundário.
+   */
+  function getOrderedTypeNames(typesArray) {
+    return (typesArray || [])
+      .slice()
+      .sort((a, b) => (a.slot || 0) - (b.slot || 0))
+      .map((t) => t?.type?.name)
+      .filter(Boolean);
+  }
+
+
 function clearPokemonList() {
     areaPokemons.innerHTML = '';
   }
@@ -199,7 +219,7 @@ function scrollToPokemonSection() {
   // Cards
   // -----------------------------
   function createCardPokemon(model) {
-    const { id, type, name, image } = model;
+    const { id, type, types, name, image } = model;
 
     const card = document.createElement('button');
     card.classList = `card-pokemon js-open-details-pokemon ${type}`;
@@ -232,13 +252,29 @@ function scrollToPokemonSection() {
     h3.textContent = capitalize(name);
     text.appendChild(h3);
 
+    // -------------------------------------------------------
+    // Ícones de type no CARD
+    //
+    // Iniciante:
+    // - Quando um Pokémon tem 2 types (ex.: Grass/Poison), queremos mostrar 2 ícones lado a lado.
+    // - `types` já vem ordenado (principal primeiro) pela função getOrderedTypeNames().
+    // -------------------------------------------------------
     const icon = document.createElement('div');
     icon.classList = 'icon';
     info.appendChild(icon);
 
-    const imgType = document.createElement('img');
-    imgType.setAttribute('src', `src/img/icon-types/${type}.svg`);
-    icon.appendChild(imgType);
+    const typeNames = (types && types.length ? types : [type]).slice(0, 2);
+    typeNames.forEach((typeName) => {
+      const bubble = document.createElement('span');
+      bubble.className = 'type-icon-bubble'; // bolinha branca atrás do ícone
+
+      const imgType = document.createElement('img');
+      imgType.setAttribute('src', `src/img/icon-types/${typeName}.svg`);
+      imgType.setAttribute('alt', `Ícone do tipo ${typeName}`);
+      bubble.appendChild(imgType);
+
+      icon.appendChild(bubble);
+    });
 
     card.addEventListener('click', openDetailsPokemon);
     areaPokemons.appendChild(card);
@@ -247,9 +283,10 @@ function scrollToPokemonSection() {
   function toCardModel(pokemonData) {
     const id = pokemonData.id;
     const name = pokemonData.name;
-    const type = pokemonData.types?.[0]?.type?.name || 'normal';
+    const types = getOrderedTypeNames(pokemonData.types);
+    const type = types[0] || 'normal';
     const image = getFallbackImage(pokemonData.sprites);
-    return { id, name, type, image };
+    return { id, name, type, types, image };
   }
 
   function upsertCache(model) {
@@ -262,7 +299,32 @@ function scrollToPokemonSection() {
   // -----------------------------
   // Modal
   // -----------------------------
-  async function openDetailsPokemon() {
+  async 
+  /**
+   * Renderiza 1 ou 2 ícones de type dentro de um container.
+   *
+   * Iniciante:
+   * - Passamos uma lista de nomes de type (ex.: ["grass","poison"]).
+   * - Criamos até 2 "bolinhas" (span) com o ícone dentro.
+   * - A ordem importa: type principal SEMPRE primeiro (esquerda).
+   */
+  function renderTypeIcons(containerEl, typeNames) {
+    if (!containerEl) return;
+    containerEl.innerHTML = '';
+
+    (typeNames || []).slice(0, 2).forEach((typeName) => {
+      const bubble = document.createElement('span');
+      bubble.className = 'type-icon-bubble';
+
+      const img = document.createElement('img');
+      img.src = `src/img/icon-types/${typeName}.svg`;
+      img.alt = `Ícone do tipo ${typeName}`;
+
+      bubble.appendChild(img);
+      containerEl.appendChild(bubble);
+    });
+  }
+function openDetailsPokemon() {
     document.documentElement.classList.add('open-modal');
     document.documentElement.style.overflow = 'hidden';
 
@@ -272,17 +334,24 @@ function scrollToPokemonSection() {
 
     // Preenche o básico a partir do card (resposta imediata)
     const cardImg = this.querySelector('.thumb-img');
-    const cardTypeIcon = this.querySelector('.info .icon img');
+    const cardTypeIcons = this.querySelectorAll('.info .icon img');
     const cardName = this.querySelector('.info h3');
     const cardCode = this.querySelector('.info span');
 
     const elImage = document.getElementById('js-image-pokemon-modal');
-    const elType = document.getElementById('js-image-type-modal');
+    const elTypeIconsWrap = modal.querySelector('.left-container .icon');
     const elName = document.getElementById('js-name-pokemon-modal');
     const elCode = document.getElementById('js-code-pokemon-modal');
 
     if (elImage && cardImg) elImage.setAttribute('src', cardImg.getAttribute('src'));
-    if (elType && cardTypeIcon) elType.setAttribute('src', cardTypeIcon.getAttribute('src'));
+
+    // Pré-visualização rápida: usa os ícones do card (1 ou 2) antes do fetch da API.
+    if (cardTypeIcons && elTypeIconsWrap) {
+      const typeNamesFromCard = Array.from(cardTypeIcons)
+        .map((img) => (img.getAttribute('src') || '').split('/').pop()?.replace('.svg', ''))
+        .filter(Boolean);
+      renderTypeIcons(elTypeIconsWrap, typeNamesFromCard);
+    }
     if (elName && cardName) elName.textContent = cardName.textContent;
     if (elCode && cardCode) elCode.textContent = cardCode.textContent;
 
@@ -315,6 +384,11 @@ function scrollToPokemonSection() {
       setStat('js-stats-sp-attack', data.stats?.[3]?.base_stat);
       setStat('js-stats-sp-defense', data.stats?.[4]?.base_stat);
       setStat('js-stats-speed', data.stats?.[5]?.base_stat);
+
+      // Ícones de type no MODAL (1 ou 2)
+      // Iniciante: usamos a ordem por slot para manter o type principal primeiro.
+      const orderedTypes = getOrderedTypeNames(data.types);
+      renderTypeIcons(elTypeIconsWrap, orderedTypes);
 
       // Types
       const elTypes = document.getElementById('js-types-pokemon');
@@ -376,9 +450,7 @@ function scrollToPokemonSection() {
   // -----------------------------
   // Listagem (All)
   // -----------------------------
-  // Renderiza uma "página" do modo All.
-  // Para iniciante: usamos "offset" para paginar (carregar de 9 em 9 sem precisar baixar tudo de uma vez).
-  async function renderAllPage({ offset }) {
+  async function renderAllPage({ offset, append }) {
     const url = `https://pokeapi.co/api/v2/pokemon/?limit=${PAGE_SIZE_ALL}&offset=${offset}`;
     const data = await fetchJson(url);
 
@@ -407,12 +479,12 @@ function scrollToPokemonSection() {
     state.allOffset = 0;
     clearPokemonList();
     btnLoadMore.style.display = 'block';
-    await renderAllPage({ offset: 0 });
+    await renderAllPage({ offset: 0, append: false });
     state.allOffset += PAGE_SIZE_ALL;
   }
 
   async function loadMoreAll() {
-    await renderAllPage({ offset: state.allOffset });
+    await renderAllPage({ offset: state.allOffset, append: true });
     state.allOffset += PAGE_SIZE_ALL;
   }
 
@@ -794,14 +866,17 @@ countPokemons.textContent = String(state.search.matches.length);
     ensurePokemonIndex();
 
     // Botão "All" já existe no HTML (desktop e mobile)
-    // Para iniciante: adicionamos o listener UMA vez. Repetir isso não quebra,
-    // mas é trabalho desnecessário e pode causar confusão no futuro.
     document.querySelectorAll('.type-filter.all').forEach((btn) => {
       btn.addEventListener('click', filterByTypes);
     });
 
     // Tipos
     initTypes();
+
+    // Listener do botão "All" (já existe no HTML)
+    document.querySelectorAll('.type-filter.all').forEach((btn) => {
+      btn.addEventListener('click', filterByTypes);
+    });
 
     // Listagem inicial (All)
     document.querySelectorAll('.type-filter.all').forEach((btn) => btn.classList.add('active'));
