@@ -24,7 +24,10 @@
   const areaTypesMobile = document.querySelector('.dropdown-select');
 
   // Guardas
-  if (!areaPokemons || !countPokemons || !btnLoadMore || !btnSearch || !inputSearch) {
+  // Guardas (importante para iniciantes):
+  // - Se a página não tiver os elementos essenciais da LISTA, não faz sentido continuar.
+  // - Elementos de busca/filtro são opcionais: se faltarem, a lista ainda pode funcionar.
+  if (!areaPokemons || !countPokemons || !btnLoadMore) {
     // Se a página não tiver os elementos esperados, não fazemos nada.
     return;
   }
@@ -83,10 +86,22 @@
     );
   };
 
-  async function fetchJson(url) {
+async function fetchJson(url) {
+  // Para iniciantes:
+  // - O projeto originalmente usa Axios (biblioteca) para fazer requisições.
+  // - Se por algum motivo o Axios não carregar (ex.: cache/arquivo não encontrado),
+  //   usamos o fetch() nativo do navegador como fallback para NÃO quebrar a página.
+  if (typeof axios !== 'undefined' && axios?.get) {
     const res = await axios.get(url);
     return res.data;
   }
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} ao acessar ${url}`);
+  }
+  return await res.json();
+}
 
   async function fetchInBatches(urls, batchSize = 20) {
     const out = [];
@@ -118,26 +133,6 @@
   function matchesNamePrefix(pokemonName, query) {
     return pokemonName.startsWith(query);
   }
-
-  /**
-   * Retorna os nomes de types em ordem (type principal primeiro).
-   *
-   * Iniciante:
-   * A PokeAPI retorna um array em `pokemon.types` com um campo `slot`.
-   * - slot 1 = type principal
-   * - slot 2 = type secundário
-   *
-   * A gente ordena por `slot` para garantir que o ícone da esquerda
-   * sempre seja o principal, e o da direita o secundário.
-   */
-  function getOrderedTypeNames(typesArray) {
-    return (typesArray || [])
-      .slice()
-      .sort((a, b) => (a.slot || 0) - (b.slot || 0))
-      .map((t) => t?.type?.name)
-      .filter(Boolean);
-  }
-
 
 function clearPokemonList() {
     areaPokemons.innerHTML = '';
@@ -219,7 +214,7 @@ function scrollToPokemonSection() {
   // Cards
   // -----------------------------
   function createCardPokemon(model) {
-    const { id, type, types, name, image } = model;
+    const { id, type, types = [type], name, image } = model;
 
     const card = document.createElement('button');
     card.classList = `card-pokemon js-open-details-pokemon ${type}`;
@@ -252,42 +247,47 @@ function scrollToPokemonSection() {
     h3.textContent = capitalize(name);
     text.appendChild(h3);
 
-    // -------------------------------------------------------
-    // Ícones de type no CARD
-    //
-    // Iniciante:
-    // - Quando um Pokémon tem 2 types (ex.: Grass/Poison), queremos mostrar 2 ícones lado a lado.
-    // - `types` já vem ordenado (principal primeiro) pela função getOrderedTypeNames().
-    // -------------------------------------------------------
-    const icon = document.createElement('div');
-    icon.classList = 'icon';
-    info.appendChild(icon);
+const icon = document.createElement('div');
+icon.classList = 'icon';
+info.appendChild(icon);
 
-    const typeNames = (types && types.length ? types : [type]).slice(0, 2);
-    typeNames.forEach((typeName) => {
-      const bubble = document.createElement('span');
-      bubble.className = 'type-icon-bubble'; // bolinha branca atrás do ícone
+// Ícones de type (principal + secundário quando existir)
+// - Ex.: Bulbasaur -> [grass, poison]
+const uniqueTypes = Array.from(new Set((types || []).filter(Boolean))).slice(0, 2);
 
-      const imgType = document.createElement('img');
-      imgType.setAttribute('src', `src/img/icon-types/${typeName}.svg`);
-      imgType.setAttribute('alt', `Ícone do tipo ${typeName}`);
-      bubble.appendChild(imgType);
+if (uniqueTypes.length > 1) {
+  // Ajuda o CSS a identificar que existem 2 ícones (sem mudar o layout do desktop).
+  icon.classList.add('icon--double');
+}
 
-      icon.appendChild(bubble);
-    });
+uniqueTypes.forEach((t) => {
+  const imgType = document.createElement('img');
+  imgType.setAttribute('src', `src/img/icon-types/${t}.svg`);
+  imgType.setAttribute('alt', `${t} icon`);
+  icon.appendChild(imgType);
+});
 
     card.addEventListener('click', openDetailsPokemon);
     areaPokemons.appendChild(card);
   }
 
-  function toCardModel(pokemonData) {
-    const id = pokemonData.id;
-    const name = pokemonData.name;
-    const types = getOrderedTypeNames(pokemonData.types);
-    const type = types[0] || 'normal';
-    const image = getFallbackImage(pokemonData.sprites);
-    return { id, name, type, types, image };
-  }
+function toCardModel(pokemonData) {
+  const id = pokemonData.id;
+  const name = pokemonData.name;
+
+  // Types (ordem principal -> secundário)
+  // A PokeAPI traz "slot" para indicar qual é o type principal (slot 1) e o secundário (slot 2).
+  const types = (pokemonData.types || [])
+    .slice()
+    .sort((a, b) => (a.slot || 0) - (b.slot || 0))
+    .map((t) => t.type?.name)
+    .filter(Boolean);
+
+  const type = types[0] || 'normal'; // type principal (usado no tema/classe do card)
+  const image = getFallbackImage(pokemonData.sprites);
+
+  return { id, name, type, types, image };
+}
 
   function upsertCache(model) {
     if (!model || !model.id) return;
@@ -296,35 +296,51 @@ function scrollToPokemonSection() {
     }
   }
 
+// -----------------------------
+// Ícones de type no MODAL (principal + secundário)
+// -----------------------------
+function setModalTypeIcons(modalEl, typeNames) {
+  const iconWrap = modalEl?.querySelector('.left-container .icon');
+  if (!iconWrap) return;
+
+  // Ícone principal (já existe no HTML com id="js-image-type-modal")
+  const imgPrimary = iconWrap.querySelector('#js-image-type-modal');
+
+  // Ícone secundário (criamos via JS para não precisar mudar o HTML)
+  let imgSecondary = iconWrap.querySelector('img.js-image-type-modal-secondary');
+
+  // Normaliza e limita a 2 tipos
+  const types = Array.from(new Set((typeNames || []).filter(Boolean))).slice(0, 2);
+
+  if (imgPrimary) {
+    imgPrimary.setAttribute('src', types[0] ? `src/img/icon-types/${types[0]}.svg` : '');
+    imgPrimary.setAttribute('alt', types[0] ? `${types[0]} icon` : '');
+  }
+
+  // Cria o segundo <img> só quando precisar (para não afetar layout do desktop quando não for necessário)
+  if (types.length > 1) {
+    if (!imgSecondary) {
+      imgSecondary = document.createElement('img');
+      imgSecondary.className = 'js-image-type-modal-secondary';
+      // Colocamos o secundário DEPOIS do principal (ordem esquerda -> direita)
+      iconWrap.appendChild(imgSecondary);
+    }
+    imgSecondary.style.display = '';
+    imgSecondary.setAttribute('src', `src/img/icon-types/${types[1]}.svg`);
+    imgSecondary.setAttribute('alt', `${types[1]} icon`);
+    iconWrap.classList.add('icon--double');
+  } else if (imgSecondary) {
+    imgSecondary.style.display = 'none';
+    imgSecondary.setAttribute('src', '');
+    imgSecondary.setAttribute('alt', '');
+    iconWrap.classList.remove('icon--double');
+  }
+}
+
   // -----------------------------
   // Modal
   // -----------------------------
-  async 
-  /**
-   * Renderiza 1 ou 2 ícones de type dentro de um container.
-   *
-   * Iniciante:
-   * - Passamos uma lista de nomes de type (ex.: ["grass","poison"]).
-   * - Criamos até 2 "bolinhas" (span) com o ícone dentro.
-   * - A ordem importa: type principal SEMPRE primeiro (esquerda).
-   */
-  function renderTypeIcons(containerEl, typeNames) {
-    if (!containerEl) return;
-    containerEl.innerHTML = '';
-
-    (typeNames || []).slice(0, 2).forEach((typeName) => {
-      const bubble = document.createElement('span');
-      bubble.className = 'type-icon-bubble';
-
-      const img = document.createElement('img');
-      img.src = `src/img/icon-types/${typeName}.svg`;
-      img.alt = `Ícone do tipo ${typeName}`;
-
-      bubble.appendChild(img);
-      containerEl.appendChild(bubble);
-    });
-  }
-function openDetailsPokemon() {
+  async function openDetailsPokemon() {
     document.documentElement.classList.add('open-modal');
     document.documentElement.style.overflow = 'hidden';
 
@@ -333,27 +349,26 @@ function openDetailsPokemon() {
     if (!modal) return;
 
     // Preenche o básico a partir do card (resposta imediata)
-    const cardImg = this.querySelector('.thumb-img');
-    const cardTypeIcons = this.querySelectorAll('.info .icon img');
-    const cardName = this.querySelector('.info h3');
-    const cardCode = this.querySelector('.info span');
+const cardImg = this.querySelector('.thumb-img');
+const cardName = this.querySelector('.info h3');
+const cardCode = this.querySelector('.info span');
 
-    const elImage = document.getElementById('js-image-pokemon-modal');
-    const elTypeIconsWrap = modal.querySelector('.left-container .icon');
-    const elName = document.getElementById('js-name-pokemon-modal');
-    const elCode = document.getElementById('js-code-pokemon-modal');
+const elImage = document.getElementById('js-image-pokemon-modal');
+const elName = document.getElementById('js-name-pokemon-modal');
+const elCode = document.getElementById('js-code-pokemon-modal');
 
-    if (elImage && cardImg) elImage.setAttribute('src', cardImg.getAttribute('src'));
+if (elImage && cardImg) elImage.setAttribute('src', cardImg.getAttribute('src'));
+if (elName && cardName) elName.textContent = cardName.textContent;
+if (elCode && cardCode) elCode.textContent = cardCode.textContent;
 
-    // Pré-visualização rápida: usa os ícones do card (1 ou 2) antes do fetch da API.
-    if (cardTypeIcons && elTypeIconsWrap) {
-      const typeNamesFromCard = Array.from(cardTypeIcons)
-        .map((img) => (img.getAttribute('src') || '').split('/').pop()?.replace('.svg', ''))
-        .filter(Boolean);
-      renderTypeIcons(elTypeIconsWrap, typeNamesFromCard);
-    }
-    if (elName && cardName) elName.textContent = cardName.textContent;
-    if (elCode && cardCode) elCode.textContent = cardCode.textContent;
+// Ícones de type no modal:
+// - Lemos os types direto do card (se tiver 1 ou 2 ícones).
+const cardTypeIcons = Array.from(this.querySelectorAll('.info .icon img'));
+const typeNamesFromCard = cardTypeIcons
+  .map((img) => (img.getAttribute('src') || '').split('/').pop()?.replace('.svg', ''))
+  .filter(Boolean);
+
+setModalTypeIcons(modal, typeNamesFromCard);
 
     // Define tema (background) do modal
     const typeClass = this.classList[2];
@@ -385,11 +400,6 @@ function openDetailsPokemon() {
       setStat('js-stats-sp-defense', data.stats?.[4]?.base_stat);
       setStat('js-stats-speed', data.stats?.[5]?.base_stat);
 
-      // Ícones de type no MODAL (1 ou 2)
-      // Iniciante: usamos a ordem por slot para manter o type principal primeiro.
-      const orderedTypes = getOrderedTypeNames(data.types);
-      renderTypeIcons(elTypeIconsWrap, orderedTypes);
-
       // Types
       const elTypes = document.getElementById('js-types-pokemon');
       if (elTypes) {
@@ -403,6 +413,16 @@ function openDetailsPokemon() {
           elTypes.appendChild(li);
         });
       }
+
+// Atualiza também os ícones do modal (principal + secundário)
+// usando a resposta da API (garante ordem correta: slot 1 -> slot 2).
+const typeNames = (data.types || [])
+  .slice()
+  .sort((a, b) => (a.slot || 0) - (b.slot || 0))
+  .map((t) => t.type?.name)
+  .filter(Boolean);
+
+setModalTypeIcons(modal, typeNames);
 
       // Weaknesses
       const elWeak = document.getElementById('js-area-weak');
@@ -451,6 +471,7 @@ function openDetailsPokemon() {
   // Listagem (All)
   // -----------------------------
   async function renderAllPage({ offset, append }) {
+    try {
     const url = `https://pokeapi.co/api/v2/pokemon/?limit=${PAGE_SIZE_ALL}&offset=${offset}`;
     const data = await fetchJson(url);
 
@@ -471,6 +492,12 @@ function openDetailsPokemon() {
     });
 
     // Não faz scroll automático na listagem "All" para não mover a página ao carregar.
+} catch (e) {
+  console.error('[Pokedex] Falha ao carregar página (All):', e);
+  renderError('Falha ao carregar a lista de Pokémons. Tente recarregar a página.');
+  // Esconde o botão de "Load more" para não ficar clicando e gerando mais erros.
+  btnLoadMore.style.display = 'none';
+}
   }
 
   async function loadInitialAll() {
@@ -508,7 +535,8 @@ function openDetailsPokemon() {
 
     // Limpa busca ao trocar tipo
     inputSearch.value = '';
-    btnSearch.disabled = true;
+    // Botão de busca pode não existir em versões antigas do HTML.
+    if (btnSearch) btnSearch.disabled = true;
     updateSuggestions('');
 
     // Mantém o estado "active" sincronizado entre desktop e mobile
@@ -518,7 +546,12 @@ function openDetailsPokemon() {
 
     // "All" (sem id)
     if (!idType) {
+    try {
       await loadInitialAll();
+    } catch (e) {
+      console.error('[Pokedex] Falha ao carregar lista inicial:', e);
+      renderError('Não foi possível carregar os Pokémons agora. Verifique sua conexão e recarregue a página.');
+    }
       return;
     }
 
@@ -733,8 +766,9 @@ countPokemons.textContent = String(state.search.matches.length);
   // Também atualizamos o autocomplete (datalist) ao mesmo tempo.
   let searchTimer = null;
   function scheduleSearch() {
+    if (!inputSearch) return;
     const q = inputSearch.value.trim().toLowerCase();
-    btnSearch.disabled = q.length === 0;
+    if (btnSearch) btnSearch.disabled = q.length === 0;
     updateSuggestions(q);
 
     if (searchTimer) window.clearTimeout(searchTimer);
@@ -780,12 +814,16 @@ countPokemons.textContent = String(state.search.matches.length);
     }
   }
 
-  btnSearch.addEventListener('click', handleSearchCommit);
-  inputSearch.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter' && inputSearch.value.trim().length > 0) {
-      handleSearchCommit();
-    }
-  });
+  if (btnSearch) {
+    btnSearch.addEventListener('click', handleSearchCommit);
+  }
+  if (inputSearch) {
+    inputSearch.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter' && inputSearch.value.trim().length > 0) {
+        handleSearchCommit();
+      }
+    });
+  }
 
   // Load more (depende do modo)
   btnLoadMore.addEventListener('click', async () => {
@@ -871,7 +909,10 @@ countPokemons.textContent = String(state.search.matches.length);
     });
 
     // Tipos
-    initTypes();
+    // Importante: se falhar (rede/API), não queremos quebrar o restante da página.
+    initTypes().catch((e) => {
+      console.error('[Pokedex] Falha ao carregar tipos:', e);
+    });
 
     // Listener do botão "All" (já existe no HTML)
     document.querySelectorAll('.type-filter.all').forEach((btn) => {
@@ -880,7 +921,7 @@ countPokemons.textContent = String(state.search.matches.length);
 
     // Listagem inicial (All)
     document.querySelectorAll('.type-filter.all').forEach((btn) => btn.classList.add('active'));
-    btnSearch.disabled = true;
+    if (btnSearch) btnSearch.disabled = true;
     await loadInitialAll();
   })();
 })();
