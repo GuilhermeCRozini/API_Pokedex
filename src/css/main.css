@@ -392,6 +392,33 @@ ul {
 .card-pokemon .info .icon {
   margin-bottom: 0.625rem;
 }
+/* ------------------------------------------------------------
+   Ícones de type nos CARDS (1 ou 2)
+   Iniciante:
+   - Cada ícone fica dentro de uma "bolinha" branca.
+   - Quando existir 2 types, mostramos lado a lado (principal -> secundário).
+------------------------------------------------------------ */
+.card-pokemon .info .icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-pokemon .info .icon .type-icon-bubble {
+  width: 2.125rem;
+  height: 2.125rem;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-pokemon .info .icon .type-icon-bubble img {
+  width: 1rem;
+  height: 1rem;
+}
+
 @media (max-width: 1200px) {
   .card-pokemon {
     max-width: 100%;
@@ -727,20 +754,35 @@ ul {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
+
+  /* Iniciante:
+     Agora este elemento é um "container" que pode ter 1 ou 2 ícones.
+     O visual de "bolinha" fica no .type-icon-bubble. */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  width: auto;
+  height: auto;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+.left-container .icon .type-icon-bubble {
   width: 2.125rem;
   height: 2.125rem;
   background-color: #FFFFFF;
   border-radius: 50%;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
 }
+
+.left-container .icon .type-icon-bubble img {
+  width: 1rem;
+  height: 1rem;
+}
+
 .modal .box .left-container .image {
   position: relative;
   right: -1.5625rem;
@@ -1970,8 +2012,6 @@ img {
   }
 }
 
-}
-
 /* Reforço para celulares menores:
    - Mesmo tendo regra em 560px no CSS original, nós adicionamos esta aqui no final
      para garantir que a regra de 1 coluna "vença" as regras de tablet (2 colunas). */
@@ -1981,92 +2021,62 @@ img {
     grid-gap: 1rem;
   }
 }
-/* ===========================================================
-   MELHORIAS RESPONSIVAS UNIVERSAIS (mobile/tablet)
-   Regras adicionadas SEM mexer no layout desktop original.
-   Para iniciantes:
-   - Tudo dentro de @media(max-width: ...) só afeta telas menores.
-   - Usamos "clamp" e unidades modernas (svh/dvh) para adaptar melhor em
-     diferentes navegadores (Chrome/Firefox/Safari) e orientação (retrato/paisagem).
-   =========================================================== */
 
-/* 1) Modal: quando o Pokémon tem 2 tipos, mostramos 2 ícones lado a lado
-   (apenas quando o JS adiciona a classe "icon--double"). */
-.modal .box .left-container .icon.icon--double {
-  width: auto;
-  min-width: 2.125rem;
-  padding: 0 0.375rem;
-  border-radius: 999px;
-  gap: 0.25rem;
-  box-sizing: border-box;
-}
-.modal .box .left-container .icon.icon--double img {
-  width: 1.25rem;
-  height: 1.25rem;
-  display: block;
-}
 
-/* 2) Responsividade geral (não afeta desktop) */
-@media (max-width: 1024px) {
-  /* Evita "vazamento" horizontal em alguns browsers mobile */
-  html, body {
-    overflow-x: hidden;
-  }
-
-  /* HERO: altura fluida (mantém altura definida para o Swiper) */
-  .s-area-slide-hero {
-    height: clamp(40rem, calc(100vh + 10rem), 65.3125rem);
-    height: clamp(40rem, calc(100svh + 10rem), 65.3125rem);
-  }
-
-  /* Overlap entre banner e seção de listagem: mais leve e adaptável */
-  .s-all-info-pokemons {
-    margin-top: calc(-1 * clamp(8rem, 16vh, 18rem));
-    padding-top: clamp(4rem, 10vh, 7.4375rem);
-  }
-
-  /* Deixa o contador ("X Pokémons") respirar após a busca */
-  .s-all-info-pokemons .area-all .right-container .top-container {
-    margin-top: 1rem;
-  }
-
-  /* iOS (Safari) evita "zoom/pulo" no input durante digitação */
-  .search input[type=text] {
-    font-size: 16px;
-    min-width: 0;
-  }
-
-  /* Imagens não estourarem containers em telas pequenas */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-}
-
-/* Landscape: em telas baixas, reduzimos ainda mais o overlap
-   para não esconder conteúdo "embaixo" do banner */
-@media (max-width: 1024px) and (orientation: landscape) {
-  .s-all-info-pokemons {
-    margin-top: calc(-1 * clamp(4rem, 10vh, 12rem));
-    padding-top: clamp(3rem, 7vh, 5.5rem);
-  }
-}
-
-/* Modal em mobile: unidades novas (svh/dvh) + safe-area (iPhone com notch)
-   para evitar partes escondidas por barras do navegador */
-@media (max-width: 768px) {
-  .modal {
-    padding: 1rem;
-    padding-top: calc(1rem + env(safe-area-inset-top));
-    padding-right: calc(1rem + env(safe-area-inset-right));
-    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-    padding-left: calc(1rem + env(safe-area-inset-left));
-  }
-
+/* ============================================================
+   Responsive: Modal (mobile/tablet/landscape)
+   Regras APENAS para responsivo (não afeta o desktop "original").
+   - Botão X no canto superior direito (visível em qualquer browser)
+   - Scrollbar visível no conteúdo do modal
+   - Evita partes escondidas (safe-area e unidades svh/dvh)
+============================================================ */
+@media (max-width: 768px), (max-height: 520px) {
   .modal .box {
-    max-height: calc(100vh - 2rem);
-    max-height: calc(100svh - 2rem);
-    max-height: calc(100dvh - 2rem);
-    border-radius: 1rem;
+    /* Em telas pequenas, usamos altura automática + limite por viewport.
+       svh/dvh ajuda em browsers mobile (barras do topo variam). */
+    height: auto;
+    max-height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1.5rem);
+    width: calc(100vw - 1.5rem);
+    border-radius: 1rem; /* garante cantos inferiores tão arredondados quanto os superiores */
+    overflow: hidden;     /* evita que partes internas "vazem" e tirem o arredondado */
+  }
+
+  /* Fecha (X) dentro do modal no canto superior direito */
+  .modal .box .close {
+    top: calc(env(safe-area-inset-top) + 0.75rem);
+    right: calc(env(safe-area-inset-right) + 0.75rem);
+    z-index: 5;
+  }
+
+  /* Deixa espaço para o botão X não colidir com os ícones de type */
+  .left-container .icon {
+    right: calc(env(safe-area-inset-right) + 3.75rem);
+  }
+
+  /* Scroll interno visível no conteúdo da direita */
+  .modal .box .right-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+  }
+
+  /* Scrollbar com tema (discreta) - Chrome/Edge/Safari */
+  .modal .box .right-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  .modal .box .right-container::-webkit-scrollbar-track {
+    background: rgba(13, 12, 71, 0.06);
+    border-radius: 999px;
+  }
+  .modal .box .right-container::-webkit-scrollbar-thumb {
+    background: rgba(201, 12, 12, 0.35); /* vermelho do tema */
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+  }
+
+  /* Scrollbar - Firefox */
+  .modal .box .right-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 12, 12, 0.35) rgba(13, 12, 71, 0.06);
   }
 }
