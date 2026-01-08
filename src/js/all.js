@@ -247,25 +247,37 @@ function scrollToPokemonSection() {
     h3.textContent = capitalize(name);
     text.appendChild(h3);
 
-const icon = document.createElement('div');
-icon.classList = 'icon';
-info.appendChild(icon);
+	const icon = document.createElement('div');
+	icon.classList = 'icon';
+	info.appendChild(icon);
 
-// Ícones de type (principal + secundário quando existir)
-// - Ex.: Bulbasaur -> [grass, poison]
-const uniqueTypes = Array.from(new Set((types || []).filter(Boolean))).slice(0, 2);
+	// -------------------------------------------------------
+	// Ícones de type no CARD (1 ou 2)
+	//
+	// Iniciante:
+	// - A PokeAPI pode retornar 1 type (ex.: "fire") ou 2 types (ex.: "grass" e "poison").
+	// - Queremos mostrar esses ícones como "bolinhas" lado a lado.
+	// - `types` já vem ordenado: principal primeiro (slot 1) e secundário depois (slot 2).
+	// -------------------------------------------------------
+	const uniqueTypes = Array.from(new Set((types || []).filter(Boolean))).slice(0, 2);
 
-if (uniqueTypes.length > 1) {
-  // Ajuda o CSS a identificar que existem 2 ícones (sem mudar o layout do desktop).
-  icon.classList.add('icon--double');
-}
+	if (uniqueTypes.length > 1) {
+	  // Classe opcional: pode ser usada no CSS caso você queira ajustes só quando tiver 2 ícones.
+	  icon.classList.add('icon--double');
+	}
 
-uniqueTypes.forEach((t) => {
-  const imgType = document.createElement('img');
-  imgType.setAttribute('src', `src/img/icon-types/${t}.svg`);
-  imgType.setAttribute('alt', `${t} icon`);
-  icon.appendChild(imgType);
-});
+	uniqueTypes.forEach((t) => {
+	  // Cada ícone fica dentro de uma bolinha branca (o CSS faz o visual).
+	  const bubble = document.createElement('span');
+	  bubble.className = 'type-icon-bubble';
+
+	  const imgType = document.createElement('img');
+	  imgType.setAttribute('src', `src/img/icon-types/${t}.svg`);
+	  imgType.setAttribute('alt', `Ícone do tipo ${t}`);
+
+	  bubble.appendChild(imgType);
+	  icon.appendChild(bubble);
+	});
 
     card.addEventListener('click', openDetailsPokemon);
     areaPokemons.appendChild(card);
@@ -303,38 +315,46 @@ function setModalTypeIcons(modalEl, typeNames) {
   const iconWrap = modalEl?.querySelector('.left-container .icon');
   if (!iconWrap) return;
 
-  // Ícone principal (já existe no HTML com id="js-image-type-modal")
-  const imgPrimary = iconWrap.querySelector('#js-image-type-modal');
+  // -------------------------------------------------------
+  // Iniciante:
+  // - O HTML do modal já tem um <img id="js-image-type-modal"> dentro de .left-container .icon.
+  // - Para suportar 2 types, a gente monta 1 ou 2 "bolinhas" (span.type-icon-bubble)
+  //   e coloca os ícones dentro.
+  // - Mantemos o ID do primeiro ícone para compatibilidade com o layout original.
+  // -------------------------------------------------------
 
-  // Ícone secundário (criamos via JS para não precisar mudar o HTML)
-  let imgSecondary = iconWrap.querySelector('img.js-image-type-modal-secondary');
-
-  // Normaliza e limita a 2 tipos
+  // Normaliza e limita a 2 tipos (ordem: principal -> secundário)
   const types = Array.from(new Set((typeNames || []).filter(Boolean))).slice(0, 2);
 
-  if (imgPrimary) {
-    imgPrimary.setAttribute('src', types[0] ? `src/img/icon-types/${types[0]}.svg` : '');
-    imgPrimary.setAttribute('alt', types[0] ? `${types[0]} icon` : '');
-  }
+  // Guardamos o <img> original antes de limpar o container.
+  const existingPrimaryImg = iconWrap.querySelector('#js-image-type-modal');
 
-  // Cria o segundo <img> só quando precisar (para não afetar layout do desktop quando não for necessário)
-  if (types.length > 1) {
-    if (!imgSecondary) {
-      imgSecondary = document.createElement('img');
-      imgSecondary.className = 'js-image-type-modal-secondary';
-      // Colocamos o secundário DEPOIS do principal (ordem esquerda -> direita)
-      iconWrap.appendChild(imgSecondary);
-    }
-    imgSecondary.style.display = '';
-    imgSecondary.setAttribute('src', `src/img/icon-types/${types[1]}.svg`);
-    imgSecondary.setAttribute('alt', `${types[1]} icon`);
-    iconWrap.classList.add('icon--double');
-  } else if (imgSecondary) {
-    imgSecondary.style.display = 'none';
-    imgSecondary.setAttribute('src', '');
-    imgSecondary.setAttribute('alt', '');
-    iconWrap.classList.remove('icon--double');
-  }
+  // Limpa e reconstrói o conteúdo.
+  iconWrap.innerHTML = '';
+
+  types.forEach((typeName, index) => {
+    const bubble = document.createElement('span');
+    bubble.className = 'type-icon-bubble';
+
+    // Reaproveita o <img> original como primeiro ícone.
+    const img = (index === 0 && existingPrimaryImg) ? existingPrimaryImg : document.createElement('img');
+
+    // Se for o primeiro e não existir ainda, garantimos o ID (compatível com o HTML original)
+    if (index === 0 && !img.id) img.id = 'js-image-type-modal';
+
+    // Se for o segundo, marcamos com classe (opcional, útil para debug)
+    if (index === 1) img.classList.add('js-image-type-modal-secondary');
+
+    img.setAttribute('src', `src/img/icon-types/${typeName}.svg`);
+    img.setAttribute('alt', `Ícone do tipo ${typeName}`);
+
+    bubble.appendChild(img);
+    iconWrap.appendChild(bubble);
+  });
+
+  // Classe opcional (caso o CSS queira diferenciar 1 vs 2 ícones)
+  if (types.length > 1) iconWrap.classList.add('icon--double');
+  else iconWrap.classList.remove('icon--double');
 }
 
   // -----------------------------
