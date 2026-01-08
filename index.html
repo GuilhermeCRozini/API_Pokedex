@@ -10,18 +10,12 @@
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--
-      Responsividade (iniciante):
-      - width=device-width faz o layout usar a largura real do dispositivo.
-      - initial-scale=1.0 evita zoom inicial.
-      - viewport-fit=cover melhora o ajuste em telas com notch (iPhone), usando a área segura.
-    -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
     <link rel="stylesheet" href="src/css/plugins.css">
     <link rel="stylesheet" href="src/css/main.css">
-    <!-- Removido: CSS do autoComplete.js (biblioteca externa).
-         Motivo: estamos usando <datalist> nativo, então esse CSS era "código morto" e só pesava a página. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
+
     <link rel="icon" type="image/svg" href="src/img/snorlax_icon.svg">
     <title>Pokédex</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -337,8 +331,21 @@
     </div>
   </container>-->
 
-  <script src="src/js/plugins.js"></script>
-  <script src="src/js/all.js"></script>
+  <!--
+    Bibliotecas JS (local) + código principal.
+
+    Por que mudar?
+    - Antes o projeto carregava tudo por "plugins.js".
+    - Se esse arquivo não existir no GitHub Pages, o navegador dá 404 e quebra dependências.
+    - Aqui carregamos as libs diretamente da pasta src/js/lib (onde elas ficam no projeto).
+
+    Observação:
+    - "defer" faz o script rodar só depois do HTML carregar (evita erros por elementos ainda não existirem).
+    - A ordem importa: primeiro as libs, depois o all.js.
+  -->
+  <script src="src/js/lib/axios.min.js" defer></script>
+  <script src="src/js/lib/swiper.min.js" defer></script>
+  <script src="src/js/all.js" defer></script>
 </body>
 
 </html>
