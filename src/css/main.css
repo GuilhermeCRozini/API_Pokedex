@@ -1950,86 +1950,27 @@ img {
    - "max-height: 90vh" usa a altura visível do viewport (vh = viewport height).
 */
 @media (max-width: 768px) {
-  /* Para iniciantes:
-     - Em mobile/tablet, o modal precisa caber na tela sem "esconder" partes.
-     - Alguns navegadores mobile tratam 100vh de forma diferente (barra de endereço),
-       por isso usamos também svh/dvh quando disponível.
-     - "safe-area-inset-*" evita que o conteúdo fique atrás do notch (iPhone) ou
-       de barras do sistema. */
-
   .modal {
-    align-items: flex-end; /* modal encosta embaixo (estilo bottom sheet) */
-
-    /* Padding com "safe area" (quando o navegador suporta) */
-    padding: calc(1rem + env(safe-area-inset-top))
-             calc(1rem + env(safe-area-inset-right))
-             calc(1rem + env(safe-area-inset-bottom))
-             calc(1rem + env(safe-area-inset-left));
+    align-items: flex-end; /* modal "encosta" embaixo para ficar mais natural no mobile */
   }
 
   .modal .box {
     width: 100%;
     max-width: none;
-    height: auto;
-
-    /* Altura máxima baseada no viewport (com fallbacks para mobile) */
-    max-height: calc(100vh - 2rem);
-    max-height: calc(100svh - 2rem);
-    max-height: calc(100dvh - 2rem);
-
-    /* Cantos arredondados também embaixo (igual em cima) */
-    border-radius: 1rem;
-
-    overflow: hidden; /* mantém o box bem "recortado" com cantos arredondados */
-
-    /* Algumas regras antigas (por faixa de largura) usam "top" negativo.
-       Aqui neutralizamos para não esconder parte do modal. */
-    top: 0;
+    height: auto;          /* altura passa a ser automática */
+    max-height: 90vh;      /* mas limitada ao tamanho da tela */
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;      /* evita barras aparecendo fora do lugar */
   }
 
-  /* Botão "X" no canto superior direito (reaproveita o mesmo botão do HTML) */
-  .modal .box .close {
-    top: 0.75rem;
-    right: 0.75rem;
-
-    /* Mantém o estilo do botão original */
-    background-color: #FFFFFF;
-    border-radius: 0.5rem;
-
-    box-shadow: 0rem 0.25rem 0.75rem rgba(0, 0, 0, 0.12);
-    z-index: 5;
-  }
-
-  /* Área que costuma "passar" da altura em mobile: deixamos rolável e com scrollbar visível */
+  /* Permite rolar apenas o conteúdo da direita (stats/infos) se ficar grande */
   .modal .right-container {
     overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-
-    /* Evita o layout "pular" quando a scrollbar aparece */
-    scrollbar-gutter: stable;
-
-    /* Firefox (scrollbar discreta) */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(61, 117, 194, 0.75) transparent;
-
-    /* Importante em alguns browsers para o scroll funcionar dentro de flex */
-    min-height: 0;
-  }
-
-  /* Scrollbar discreta e consistente (Chrome/Edge/Safari) */
-  .modal .right-container::-webkit-scrollbar {
-    width: 0.5rem;
-  }
-  .modal .right-container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .modal .right-container::-webkit-scrollbar-thumb {
-    background-color: rgba(61, 117, 194, 0.75);
-    border-radius: 999px;
+    -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
   }
 }
 
+}
 
 /* Reforço para celulares menores:
    - Mesmo tendo regra em 560px no CSS original, nós adicionamos esta aqui no final
@@ -2038,5 +1979,73 @@ img {
   .s-all-info-pokemons .area-all .right-container .all {
     grid-template-columns: 1fr;
     grid-gap: 1rem;
+  }
+}
+
+/* ======================================================================
+   AJUSTES PONTUAIS (somente responsivo)
+   ----------------------------------------------------------------------
+   Pedido do usuário:
+   1) No mobile, o contador "X Pokémons" deve ficar MAIS embaixo, para não
+      encostar/ficar sobre a parte mais escura do fundo.
+   2) Melhorar a experiência no modo paisagem (telas baixas) e, se necessário,
+      adicionar uma scrollbar discreta que combine com o tema.
+   ----------------------------------------------------------------------
+   Para iniciante:
+   - Mantemos essas regras dentro de @media para NÃO alterar o layout padrão
+     (desktop / telas grandes).
+   ====================================================================== */
+
+/* 1) MOBILE (retrato): empurra levemente o contador para baixo */
+@media (max-width: 560px) {
+  /* O contador fica dentro de .top-container. Aumentamos o "respiro" superior
+     para que ele comece abaixo da parte mais escura do fundo. */
+  .s-all-info-pokemons .area-all .right-container .top-container {
+    margin-top: 1.25rem; /* ajuste fino para mobile */
+  }
+}
+
+/* 2) MODO PAISAGEM em telas BAIXAS (ex.: smartphone deitado)
+   - Objetivo: manter a busca visível e evitar que a listagem "estoure" a tela.
+   - Solução: reduzir espaços verticais e permitir rolagem dentro da lista. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .s-all-info-pokemons .top {
+    height: auto; /* remove altura fixa para não empurrar conteúdo para baixo */
+    margin-bottom: 1.5rem;
+  }
+
+  .s-all-info-pokemons .top .search {
+    margin-top: 0; /* em paisagem, não precisamos de tanto espaço acima */
+  }
+
+  /* Em paisagem, 3 colunas costuma ficar apertado em smartphones.
+     2 colunas deixa os cards mais legíveis. */
+  .s-all-info-pokemons .area-all .right-container .all {
+    grid-template-columns: 1fr 1fr;
+
+    /* Fallback + suporte moderno:
+       - 100vh: medida clássica
+       - 100svh: "small viewport height" (melhor em browsers mobile com barras) */
+    max-height: calc(100vh - 14rem);
+    max-height: calc(100svh - 14rem);
+
+    overflow-y: auto;   /* cria rolagem interna */
+    padding-right: 0.25rem; /* espaço para a barra de rolagem não sobrepor conteúdo */
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #3D75C2 transparent;
+  }
+
+  /* WebKit (Chrome/Edge/Safari) - scrollbar discreta no tema */
+  .s-all-info-pokemons .area-all .right-container .all::-webkit-scrollbar {
+    width: 0.35rem;
+  }
+  .s-all-info-pokemons .area-all .right-container .all::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .s-all-info-pokemons .area-all .right-container .all::-webkit-scrollbar-thumb {
+    background-color: rgba(61, 117, 194, 0.85); /* azul do tema */
+    border-radius: 999px;
   }
 }
