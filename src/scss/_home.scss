@@ -425,18 +425,6 @@
     }
     .area-all {
       .right-container {
-
-// Ajuste do contador "X Pokémons" no MOBILE (retrato)
-// ---------------------------------------------------
-// Para iniciante:
-// - Este contador fica dentro de ".top-container".
-// - Em alguns celulares, ele ficava "colado" na área mais escura do fundo
-//   (por causa do overlap do layout).
-// - Aqui adicionamos um pequeno espaçamento no topo SOMENTE no mobile.
-.top-container {
-  margin-top: 1.25rem;
-}
-
         .select-custom {
           display: block;
         }
@@ -535,58 +523,7 @@
 // - Aqui fazemos um override seguro: em até 1024px, mostramos 2 colunas.
 // - Importante: NÃO mexemos no banner nem no campo de busca aqui,
 //   para manter o tamanho/posicionamento originais (como você pediu).
-// ============================================================
-// MODO PAISAGEM em telas BAIXAS (ex.: smartphone deitado)
-// -------------------------------------------------------
-// Pedido do usuário: melhorar o responsivo em paisagem e, se necessário,
-// mostrar uma scrollbar discreta que combine com o tema.
-//
-// Para iniciante:
-// - Usamos "max-height" porque em paisagem o problema principal é a ALTURA pequena.
-// - Colocamos rolagem (overflow-y: auto) dentro da lista de cards para que
-//   o topo (título + busca) continue visível.
-@media (max-height: 500px) and (orientation: landscape) {
-  .top {
-    height: auto;
-    margin-bottom: 1.5rem;
-    .search {
-      margin-top: 0;
-    }
-  }
-
-  .area-all {
-    .right-container {
-      .all {
-        grid-template-columns: 1fr 1fr;
-
-        // Fallback + suporte moderno (melhor em mobile com barras do navegador):
-        max-height: calc(100vh - 14rem);
-        max-height: calc(100svh - 14rem);
-
-        overflow-y: auto;
-        padding-right: 0.25rem;
-
-        // Firefox
-        scrollbar-width: thin;
-        scrollbar-color: #3D75C2 transparent;
-
-        // WebKit (Chrome/Edge/Safari)
-        &::-webkit-scrollbar {
-          width: 0.35rem;
-        }
-        &::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(61, 117, 194, 0.85);
-          border-radius: 999px;
-        }
-      }
-    }
-  }
-}
-
-==========
+// ======================================================================
 
 // Evita rolagem horizontal (algum elemento “vaza” para os lados em mobile)
 html, body {
@@ -609,5 +546,39 @@ html, body {
   // Garante que o card ocupe bem a largura da coluna
   .card-pokemon {
     max-width: 100%;
+  }
+}
+
+// ===========================================================
+// RESPONSIVO UNIVERSAL (mobile/tablet) - sem mexer no desktop
+// Para iniciante:
+// - O layout do banner (hero) e a seção de listagem se sobrepõem usando margin-top negativo.
+// - Em alguns celulares/tablets e em modo paisagem, isso pode "subir demais" e esconder conteúdo.
+// - Aqui nós deixamos essa sobreposição mais "fluida" com clamp(), adaptando por altura da tela.
+// ===========================================================
+@media (max-width: 1024px) {
+  // HERO: mantém altura definida (Swiper precisa de altura), mas agora ela se adapta
+  .s-area-slide-hero {
+    height: clamp(40rem, calc(100vh + 10rem), 65.3125rem);
+    height: clamp(40rem, calc(100svh + 10rem), 65.3125rem);
+  }
+
+  // Seção de listagem: overlap mais leve e adaptável
+  .s-all-info-pokemons {
+    margin-top: calc(-1 * clamp(8rem, 16vh, 18rem));
+    padding-top: clamp(4rem, 10vh, 7.4375rem);
+  }
+
+  // Contador "X Pokémons": respiro após a busca
+  .s-all-info-pokemons .area-all .right-container .top-container {
+    margin-top: 1rem;
+  }
+}
+
+// Em modo paisagem, a altura útil da tela é menor → reduzimos mais o overlap.
+@media (max-width: 1024px) and (orientation: landscape) {
+  .s-all-info-pokemons {
+    margin-top: calc(-1 * clamp(4rem, 10vh, 12rem));
+    padding-top: clamp(3rem, 7vh, 5.5rem);
   }
 }
