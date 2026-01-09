@@ -160,7 +160,7 @@
       &.icon--types {
         display: flex;
         align-items: center;
-        gap: .375rem;
+        gap: .625rem;
       }
     }
   }
@@ -279,7 +279,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: .5rem;
+  gap: .75rem;
 }
 
 .type-icon {
@@ -952,7 +952,10 @@
       .left-container {
         .icon {
           top: .75rem;
-          right: calc(.75rem + 2.25rem + .5rem);
+          // No mobile, o botão X fica no canto superior direito.
+          // Para não cobrir os ícones de tipo, colocamos os ícones no canto superior ESQUERDO.
+          left: calc(.75rem + env(safe-area-inset-left));
+          right: auto;
           z-index: 9;
         }
       }
