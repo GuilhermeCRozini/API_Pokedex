@@ -155,25 +155,13 @@
     .icon {
       margin-bottom: .625rem;
 
-      // Iniciante:
-      // Colocamos display:flex para os ícones ficarem lado a lado.
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-
-      .type-icon-bubble {
-        width: 2.125rem;
-        height: 2.125rem;
-        background-color: #FFFFFF;
-        border-radius: 50%;
-        @include centerTotalFlex;
-
-        img {
-          width: 1rem;
-          height: 1rem;
-        }
+      // Quando existem 2 tipos, o JS adiciona 'icon--types' e nós mostramos
+      // os ícones lado a lado (sem alterar a aparência quando for só 1).
+      &.icon--types {
+        display: flex;
+        align-items: center;
+        gap: .375rem;
       }
-
     }
   }
   @media(max-width: 1200px) {
@@ -272,33 +260,37 @@
         position: absolute;
         top: 1.25rem;
         right: 1.25rem;
+        width: 2.125rem;
+        height: 2.125rem;
+        background-color: #FFFFFF;
+        border-radius: 50%;
+        @include centerTotalFlex;
+      
 
-        // Iniciante:
-        // Este é um container que pode ter 1 ou 2 ícones (types) lado a lado.
-        // A "bolinha" branca fica no .type-icon-bubble abaixo.
-        display: flex;
-        align-items: center;
-        gap: .5rem;
 
-        width: auto;
-        height: auto;
-        background-color: transparent;
-        border-radius: 0;
+// Quando o Pokémon tem 2 tipos, o JS:
+// 1) adiciona a classe 'icon--types' neste container
+// 2) cria duas "bolinhas" (<span class="type-icon">) com os ícones dentro
+&.icon--types {
+  width: auto;
+  height: auto;
+  background-color: transparent;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .5rem;
+}
 
-        .type-icon-bubble {
-          width: 2.125rem;
-          height: 2.125rem;
-          background-color: #FFFFFF;
-          border-radius: 50%;
-          @include centerTotalFlex;
-
-          img {
-            width: 1rem;
-            height: 1rem;
-          }
-        }
+.type-icon {
+  width: 2.125rem;
+  height: 2.125rem;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  @include centerTotalFlex;
+}
       }
-.image {
+      .image {
         position: relative;
         right: -1.5625rem;
         width: 100%;
@@ -933,26 +925,47 @@
    =========================================================== */
 @media (max-width: 768px) {
   .modal {
-    padding: 1rem; /* respiro nas bordas em telas menores */
+    // No mobile é melhor "encostar" o modal embaixo e respeitar safe-area (iPhone etc.)
+    align-items: flex-end;
+    padding-bottom: env(safe-area-inset-bottom);
+
     .box {
       height: auto;
+
+      // "svh" = altura visível (melhor em browsers mobile com barras)
       max-height: 90vh;
+      max-height: 90svh;
+
+      // Cantos de baixo também arredondados
+      border-radius: 1rem;
+      overflow: hidden;
 
       .close {
         top: .75rem;
         right: .75rem;
         background-color: rgba(255, 255, 255, 0.95);
         box-shadow: 0rem .25rem .75rem rgba(0, 0, 0, 0.12);
-        z-index: 3;
+        z-index: 10;
+      }
+
+      // Evita o ícone de tipo ficar por baixo do X (apenas no responsivo)
+      .left-container {
+        .icon {
+          top: .75rem;
+          right: calc(.75rem + 2.25rem + .5rem);
+          z-index: 9;
+        }
       }
 
       .right-container {
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-gutter: stable;
-        -webkit-overflow-scrolling: touch;
 
-        /* Scrollbar visível e discreta (combina com o tema) */
+        // Firefox
+        scrollbar-width: thin;
+        scrollbar-color: rgba(13, 12, 71, 0.25) transparent;
+
         &::-webkit-scrollbar {
           width: .5rem;
         }
@@ -960,7 +973,7 @@
           background: transparent;
         }
         &::-webkit-scrollbar-thumb {
-          background-color: rgba(61, 117, 194, 0.75);
+          background-color: rgba(13, 12, 71, 0.25);
           border-radius: 999px;
         }
       }
@@ -968,56 +981,13 @@
   }
 }
 
-
-// ============================================================
-// Responsive: Modal (mobile/tablet/landscape)
-// Regras APENAS para responsivo (não afeta o desktop "original").
-// - Botão X no canto superior direito (visível em qualquer browser)
-// - Scrollbar visível no conteúdo do modal
-// - Evita partes escondidas (safe-area e unidades svh/dvh)
-// ============================================================
-@media (max-width: 768px), (max-height: 520px) {
+// Paisagem com pouca altura: evita partes escondidas atrás de barras do navegador
+@media (max-width: 1024px) and (orientation: landscape) and (max-height: 500px) {
   .modal {
+    align-items: center;
     .box {
-      height: auto;
-      max-height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1.5rem);
-      width: calc(100vw - 1.5rem);
-      border-radius: 1rem;
-      overflow: hidden;
-
-      .close {
-        top: calc(env(safe-area-inset-top) + .75rem);
-        right: calc(env(safe-area-inset-right) + .75rem);
-        z-index: 5;
-      }
-
-      .left-container {
-        .icon {
-          right: calc(env(safe-area-inset-right) + 3.75rem);
-        }
-      }
-
-      .right-container {
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-gutter: stable;
-
-        // Scrollbar com tema (discreta) - Chrome/Edge/Safari
-        &::-webkit-scrollbar { width: 10px; }
-        &::-webkit-scrollbar-track {
-          background: rgba(13, 12, 71, 0.06);
-          border-radius: 999px;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: rgba(201, 12, 12, 0.35);
-          border-radius: 999px;
-          border: 2px solid rgba(255, 255, 255, 0.65);
-        }
-
-        // Firefox
-        scrollbar-width: thin;
-        scrollbar-color: rgba(201, 12, 12, 0.35) rgba(13, 12, 71, 0.06);
-      }
+      max-height: 95vh;
+      max-height: 95svh;
     }
   }
 }
