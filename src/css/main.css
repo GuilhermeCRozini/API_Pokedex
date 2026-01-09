@@ -392,31 +392,15 @@ ul {
 .card-pokemon .info .icon {
   margin-bottom: 0.625rem;
 }
-/* ------------------------------------------------------------
-   Ícones de type nos CARDS (1 ou 2)
-   Iniciante:
-   - Cada ícone fica dentro de uma "bolinha" branca.
-   - Quando existir 2 types, mostramos lado a lado (principal -> secundário).
------------------------------------------------------------- */
-.card-pokemon .info .icon {
+
+/* -----------------------------------------
+   Ícones de tipo lado a lado (cards)
+   - Não altera o layout desktop, só permite 1 ou 2 ícones na mesma linha.
+   ----------------------------------------- */
+.card-pokemon .info .icon.icon--types {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.card-pokemon .info .icon .type-icon-bubble {
-  width: 2.125rem;
-  height: 2.125rem;
-  background-color: #FFFFFF;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-pokemon .info .icon .type-icon-bubble img {
-  width: 1rem;
-  height: 1rem;
+  gap: 0.375rem;
 }
 
 @media (max-width: 1200px) {
@@ -754,21 +738,38 @@ ul {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-
-  /* Iniciante:
-     Agora este elemento é um "container" que pode ter 1 ou 2 ícones.
-     O visual de "bolinha" fica no .type-icon-bubble. */
+  width: 2.125rem;
+  height: 2.125rem;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
-  gap: 0.5rem;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
 
+/* -----------------------------------------
+   Ícones de tipo lado a lado (modal)
+   - Quando o Pokémon tem 2 tipos, o JS adiciona .icon--types e cria
+     duas "bolinhas" (.type-icon) dentro do container.
+   ----------------------------------------- */
+.modal .box .left-container .icon.icon--types {
   width: auto;
   height: auto;
   background-color: transparent;
   border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
-.left-container .icon .type-icon-bubble {
+.modal .box .left-container .icon.icon--types .type-icon {
   width: 2.125rem;
   height: 2.125rem;
   background-color: #FFFFFF;
@@ -776,11 +777,6 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.left-container .icon .type-icon-bubble img {
-  width: 1rem;
-  height: 1rem;
 }
 
 .modal .box .left-container .image {
@@ -1993,22 +1989,72 @@ img {
 */
 @media (max-width: 768px) {
   .modal {
-    align-items: flex-end; /* modal "encosta" embaixo para ficar mais natural no mobile */
+    /* Mantém o modal confortável em celulares (retrato/paisagem) */
+    align-items: flex-end;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .modal .box {
     width: 100%;
     max-width: none;
-    height: auto;          /* altura passa a ser automática */
-    max-height: 90vh;      /* mas limitada ao tamanho da tela */
-    border-radius: 1rem 1rem 0 0;
-    overflow: hidden;      /* evita barras aparecendo fora do lugar */
+    height: auto;
+
+    /* "svh" = altura VISÍVEL do viewport (melhor em browsers mobile com barras) */
+    max-height: 90vh;
+    max-height: 90svh;
+
+    /* Deixa os cantos de baixo tão arredondados quanto os de cima */
+    border-radius: 1rem;
+
+    overflow: hidden; /* evita barras aparecendo fora do box */
   }
 
-  /* Permite rolar apenas o conteúdo da direita (stats/infos) se ficar grande */
+  /* Botão X dentro do box no mobile (sem alterar o desktop) */
+  .modal .box .close {
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 10;
+  }
+
+  /* Empurra o(s) ícone(s) de tipo para a esquerda para não ficar por baixo do X */
+  .modal .box .left-container .icon {
+    top: 0.75rem;
+    right: calc(0.75rem + 2.25rem + 0.5rem);
+    z-index: 9;
+  }
+
+  /* Permite rolar apenas o conteúdo da direita (infos/stats) se ficar grande */
   .modal .right-container {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
+
+    /* Scrollbar visível e discreta (combina com o tema) */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(13, 12, 71, 0.25) transparent; /* Firefox */
+    scrollbar-gutter: stable;
+  }
+  .modal .right-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  .modal .right-container::-webkit-scrollbar-thumb {
+    background: rgba(13, 12, 71, 0.25);
+    border-radius: 999px;
+  }
+  .modal .right-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* Ajuste extra para modo paisagem em telas baixas:
+   - evita que partes do modal fiquem "escondidas" atrás de barras do navegador */
+@media (max-width: 1024px) and (orientation: landscape) and (max-height: 500px) {
+  .modal {
+    align-items: center;
+  }
+
+  .modal .box {
+    max-height: 95vh;
+    max-height: 95svh;
   }
 }
 
@@ -2019,64 +2065,5 @@ img {
   .s-all-info-pokemons .area-all .right-container .all {
     grid-template-columns: 1fr;
     grid-gap: 1rem;
-  }
-}
-
-
-/* ============================================================
-   Responsive: Modal (mobile/tablet/landscape)
-   Regras APENAS para responsivo (não afeta o desktop "original").
-   - Botão X no canto superior direito (visível em qualquer browser)
-   - Scrollbar visível no conteúdo do modal
-   - Evita partes escondidas (safe-area e unidades svh/dvh)
-============================================================ */
-@media (max-width: 768px), (max-height: 520px) {
-  .modal .box {
-    /* Em telas pequenas, usamos altura automática + limite por viewport.
-       svh/dvh ajuda em browsers mobile (barras do topo variam). */
-    height: auto;
-    max-height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 1.5rem);
-    width: calc(100vw - 1.5rem);
-    border-radius: 1rem; /* garante cantos inferiores tão arredondados quanto os superiores */
-    overflow: hidden;     /* evita que partes internas "vazem" e tirem o arredondado */
-  }
-
-  /* Fecha (X) dentro do modal no canto superior direito */
-  .modal .box .close {
-    top: calc(env(safe-area-inset-top) + 0.75rem);
-    right: calc(env(safe-area-inset-right) + 0.75rem);
-    z-index: 5;
-  }
-
-  /* Deixa espaço para o botão X não colidir com os ícones de type */
-  .left-container .icon {
-    right: calc(env(safe-area-inset-right) + 3.75rem);
-  }
-
-  /* Scroll interno visível no conteúdo da direita */
-  .modal .box .right-container {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-gutter: stable;
-  }
-
-  /* Scrollbar com tema (discreta) - Chrome/Edge/Safari */
-  .modal .box .right-container::-webkit-scrollbar {
-    width: 10px;
-  }
-  .modal .box .right-container::-webkit-scrollbar-track {
-    background: rgba(13, 12, 71, 0.06);
-    border-radius: 999px;
-  }
-  .modal .box .right-container::-webkit-scrollbar-thumb {
-    background: rgba(201, 12, 12, 0.35); /* vermelho do tema */
-    border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.65);
-  }
-
-  /* Scrollbar - Firefox */
-  .modal .box .right-container {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(201, 12, 12, 0.35) rgba(13, 12, 71, 0.06);
   }
 }
